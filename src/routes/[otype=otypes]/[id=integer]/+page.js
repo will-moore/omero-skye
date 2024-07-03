@@ -11,17 +11,20 @@ export async function load({ fetch, params }) {
 	const childTypes = {
 		project: "dataset",
 		dataset: "image",
-		image: "undefined",
+		image: "",
 		screen: "plate",
-		plate: "well",
+		plate: "",
 		well: "image"
 	}
 	const chType = childTypes[params.otype];
 	const chTypePlural = `${chType}s`;
 
-	const childData = await fetch(`https://idr.openmicroscopy.org/webclient/api/${chTypePlural}/?id=${params.id}`)
+	let children = [];
+	if (chType) {
+		const childData = await fetch(`https://idr.openmicroscopy.org/webclient/api/${chTypePlural}/?id=${params.id}`)
 			.then(rsp => rsp.json());
-	const children = childData[chTypePlural];
+		children = childData[chTypePlural];
+	}
 
 	return {obj: jsonData.data, otype: params.otype, children, chType};
 }
