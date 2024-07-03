@@ -13,7 +13,14 @@
 
 <p>Projects</p>
 <ul>
-	{#each data.projects as project, i}
+	{#each data.projects as project}
 		<li><a href="project/{project.id}">{project.name} ({project.childCount})</a></li>
+	{/each}
+</ul>
+
+<p>Screens</p>
+<ul>
+	{#each data.screens as screen}
+		<li><a href="screen/{screen.id}">{screen.name} ({screen.childCount})</a></li>
 	{/each}
 </ul>
