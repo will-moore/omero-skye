@@ -13,6 +13,7 @@
 
 	{#if data.otype=="image"}
 		<img alt="Thumbnail of {data.obj.name}" src="https://idr.openmicroscopy.org/webclient/render_thumbnail/{data.obj['@id']}/"/>
+		<a href="https://idr.openmicroscopy.org/webclient/img_detail/{data.obj['@id']}/">Open in iviewer</a>
 	{/if}
 
 	<ul>
