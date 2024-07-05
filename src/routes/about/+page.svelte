@@ -1,3 +1,5 @@
+
+<div class="withMargin">
 <h1>OMERO-skye</h1>
 
 <p>
@@ -14,3 +16,11 @@
 		>omero-skye project on GitHub</a
 	>.
 </p>
+
+</div>
+
+<style>
+	.withMargin {
+		margin: 10px
+	}
+</style>
