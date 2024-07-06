@@ -1,5 +1,9 @@
 <script>
 	import '../app.css';
+
+	import { preparePageTransition } from '$lib/page-transitions';
+
+	preparePageTransition();
 </script>
 
 <nav>
