@@ -1,5 +1,4 @@
 <script>
-	import { onMount } from 'svelte';
 	export let data;
 </script>
 
@@ -12,6 +11,7 @@
 	<div class="header">
 		<h1>{data.obj.Name}</h1>
 		<h2>{data.otype}:{data.obj['@id']}</h2>
+		<a href="/{data.otype}/{data.obj['@id']}/annotations">Annotations</a>
 	</div>
 
 	{#if data.otype == 'image'}
