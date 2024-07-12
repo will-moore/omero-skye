@@ -4,7 +4,14 @@
 	export let data;
 </script>
 
-<h1>Annotations</h1>
+<div class="header">
+	<h1>{data.obj.Name}</h1>
+	<h2>{data.otype}:{data.obj['@id']}</h2>
+</div>
+
+<a href="/{data.otype}/{data.obj['@id']}">Back to {data.otype}</a>
+
+<h3>Annotations</h3>
 
 {#each Object.keys(data.annotations) as annType}
 	<h3>{annType}</h3>

@@ -9,6 +9,11 @@
 
 <div class="text-column">
 
+	<div class="header">
+		<h1>{data.obj.Name}</h1>
+		<h2>{data.otype}:{data.obj['@id']}</h2>
+	</div>
+
 	<a href="/{data.otype}/{data.obj['@id']}/annotations">Annotations</a>
 
 	<ul>
