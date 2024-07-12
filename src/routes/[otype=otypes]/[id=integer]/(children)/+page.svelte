@@ -39,6 +39,11 @@
 
 <style>
 
+	.thumbnail {
+		width: 48px;
+		height: 48px;
+	}
+
 	ul {
 		padding: 10px;
 	}

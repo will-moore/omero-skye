@@ -4,6 +4,17 @@
 	console.log('Image data', data);
 </script>
 
+<h1>{data.imgData.meta.imageName}</h1>
+<h2>Image: {data.imgData.id}</h2>
+
+<a href="/image/{data.imgData.id}/annotations">Annotations</a>
+
+<table>
+    <tbody>
+        <tr><td>Size:</td><td>{data.imgData.size.width} x {data.imgData.size.height}</td></tr>
+    </tbody>
+</table>
+
 <a href="/{data.otype}/{data.obj['@id']}">Back to Dataset</a>
 
 <div class="imgviewer">
@@ -55,5 +66,8 @@
 	.preview {
 		width: 192px;
 		height: 192px;
+	}
+	img {
+		view-transition-name: var(--viewtransitionkey);
 	}
 </style>
