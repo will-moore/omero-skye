@@ -1,4 +1,5 @@
 <script>
+	import ImageViewer from "../../../../../../components/ImageViewer/index.svelte";
 	export let data;
 
 	console.log('Image data', data);
@@ -6,12 +7,7 @@
 
 <div class="fullpage">
 	<div class="imgviewer">
-		<img
-			class="preview"
-			style:--viewtransitionkey="image-{data.params.iid}"
-			alt="Thumbnail of {data.obj.Name}"
-			src="https://idr.openmicroscopy.org/webclient/render_thumbnail/{data.params.iid}/"
-		/>
+		<ImageViewer imgData={data.imgData} />
 	</div>
 
 	<div class="thumbnails">
@@ -101,15 +97,5 @@
 
 	.imgviewer {
 		flex: 1 0 auto;
-		display: flex;
-		align-items: center;
-		flex-direction: column;
-	}
-	.preview {
-		min-width: 100%;
-		position: absolute;
-	}
-	img {
-		view-transition-name: var(--viewtransitionkey);
 	}
 </style>
