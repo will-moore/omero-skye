@@ -34,6 +34,7 @@
 		{#if child.id != data.params.iid}
 			<img
 				class="thumbnail"
+				loading="lazy"
 				alt="Thumbnail of {child.name}"
 				src="https://idr.openmicroscopy.org/webclient/render_thumbnail/{child.id}/"
 			/>

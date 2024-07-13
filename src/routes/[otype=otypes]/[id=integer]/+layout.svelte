@@ -1,3 +1,5 @@
+
+<!-- Not sure we need this +layout.svelte now? -->
 <script>
 	export let data;
 </script>
@@ -12,17 +14,3 @@
     <slot></slot>
 	
 </div>
-
-<style>
-	.header {
-		padding: 10px;
-	}
-
-	a {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		margin: 5px 0;
-		gap: 5px;
-	}
-</style>

@@ -1,13 +1,13 @@
 
+// All pages under e.g. /project/ID need to have the project Name.
 export async function load({ fetch, params }) {
-	console.log('layout.js params', params, params.otype);
+
 	// NB: JSON api uses e.g. "projects" (plural)
     let url = `https://idr.openmicroscopy.org/api/v0/m/${params.otype}s/${params.id}/`;
 	const res = await fetch(url);
 	const jsonData = await res.json();
-    console.log('jsonData', jsonData);
 
-	// Load children...
+	// child-type needed on the page for links etc.
 	const childTypes = {
 		project: "dataset",
 		dataset: "image",

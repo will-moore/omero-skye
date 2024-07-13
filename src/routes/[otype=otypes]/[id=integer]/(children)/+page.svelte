@@ -1,3 +1,8 @@
+
+<!-- 
+	Url like /project/ID or /dataset/ID or /screen/ID
+	/(children)/ group (for loading children) is not included in URL
+ -->
 <script>
 	export let data;
 </script>
@@ -25,6 +30,7 @@
 							style:--viewtransitionkey="image-{child.id}"
 							class="thumbnail"
 							alt="Thumbnail of {child.name}"
+							loading="lazy"
 							src="https://idr.openmicroscopy.org/webclient/render_thumbnail/{child.id}/"
 						/>
 						{child.name}

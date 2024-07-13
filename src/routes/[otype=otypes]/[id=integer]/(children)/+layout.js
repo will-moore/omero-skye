@@ -1,6 +1,8 @@
 
+// Pages below this layout, such as /project/ID or /dataset/ID or /dataset/ID/image/IID
+// all need child objects loaded (datasets or images)
+
 export async function load({ fetch, params }) {
-	console.log('params', params, params.otype);
 
 	// Load children...
 	const childTypes = {
