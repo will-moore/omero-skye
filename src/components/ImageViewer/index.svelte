@@ -5,7 +5,7 @@
 	let innerHeight = 0;
 
 	$: condition = innerWidth * 1.33 <= innerHeight;
-    $: imgWidth = innerWidth - 10;
+    $: imgWidth = innerWidth - 20;
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
@@ -15,14 +15,12 @@
 	class="preview"
 	style:--viewtransitionkey="image-{imgData.id}"
 	style:background-image="url('https://idr.openmicroscopy.org/webclient/render_thumbnail/{imgData.id}/')"
-    style:width="100px"
-    style:height="100px"
+    style:width="{imgWidth}px"
+    style:height="{imgWidth}px"
 	alt="Thumbnail of {imgData.meta.Name}"
 	src="https://idr.openmicroscopy.org/webclient/render_thumbnail/{imgData.id}/"
 />
 
-<p>.</p>
-<p>.</p>
 <p>Inner Width: {innerWidth}</p>
 <p>Inner Height: {innerHeight}</p>
 <p>condition: {condition}</p>
@@ -32,8 +30,8 @@
 	.preview {
 		/* min-width: 100%; */
 		position: absolute;
-        top: 100px;
-        left: 100px;
+        top: 10px;
+        left: 10px;
 		background-size: cover;
 		background-repeat: no-repeat;
 	}
