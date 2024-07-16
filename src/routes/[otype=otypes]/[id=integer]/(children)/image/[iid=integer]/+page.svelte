@@ -11,8 +11,10 @@
 	</div>
 
 	<div class="thumbnails">
-		{#each data.children as child}
-			<a href="/{data.otype}/{data.obj['@id']}/{data.chType}/{child.id}">
+		{#each data.children as child (child.id)}
+			<a href="/{data.otype}/{data.obj['@id']}/{data.chType}/{child.id}"
+			data-sveltekit-replacestate
+			>
 				{#if child.id != data.params.iid}
 					<img
 						class="thumbnail"
