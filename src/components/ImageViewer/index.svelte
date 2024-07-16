@@ -3,7 +3,16 @@
 
 	let innerWidth = 0;
 	let innerHeight = 0;
-    let zoom = 100;
+
+    $: zoom = 100;
+    $: dx = 0;
+    $: dy = 0;
+    // reset zoom and pan when imgData changes (new Image)
+    $: if (imgData.id > 0) {
+        zoom = 100;
+        dx = 0;
+        dy = 0;
+    }
 
 	const THUMBHEIGHT = 50; //approx
 	$: viewportRatio = innerWidth / (innerHeight - THUMBHEIGHT);
@@ -13,7 +22,6 @@
 
 	$: imgWidth = zoom / 100 * (imgWiderThanViewport ? innerWidth : (innerHeight - THUMBHEIGHT) * imageRatio);
 	$: imgHeight = zoom / 100 * (imgWiderThanViewport ? innerWidth / imageRatio : innerHeight - THUMBHEIGHT);
-
 
 </script>
 
@@ -26,8 +34,8 @@
 	style:background-image="url('https://idr.openmicroscopy.org/webclient/render_thumbnail/{imgData.id}/')"
 	style:width="{imgWidth}px"
 	style:height="{imgHeight}px"
-	style:top="0px"
-	style:left="0px"
+	style:left="{(-(imgWidth - innerWidth) / 2) + dx}px"
+	style:top="{(-(imgHeight - (innerHeight - THUMBHEIGHT)) / 2) + dy}px"
 	alt="Thumbnail of {imgData.meta.Name}"
 	src="https://idr.openmicroscopy.org/webclient/render_image/{imgData.id}/"
 />
