@@ -28,7 +28,8 @@
 <!-- TODO: bind to viewport element instead of window? -->
 <svelte:window bind:innerWidth bind:innerHeight />
 
-<img
+<div class="viewport">
+<!-- <img
 	class="preview"
 	style:--viewtransitionkey="image-{imgData.id}"
 	style:background-image="url('https://idr.openmicroscopy.org/webclient/render_thumbnail/{imgData.id}/')"
@@ -38,9 +39,14 @@
 	style:top="{(-(imgHeight - (innerHeight - THUMBHEIGHT)) / 2) + dy}px"
 	alt="Thumbnail of {imgData.meta.Name}"
 	src="https://idr.openmicroscopy.org/webclient/render_image/{imgData.id}/"
-/>
+/> -->
 
-<div class="dims">
+<div style:width="100%">
+    Image Viewer
+</div>
+
+
+<!-- <div class="dims">
 	<p>Inner Width: {innerWidth}</p>
 	<p>Inner Height: {innerHeight}</p>
     <p>imgWiderThanViewport: {imgWiderThanViewport}</p>
@@ -49,9 +55,20 @@
     <p>Zoom: {zoom}</p>
     <button on:click={() =>zoom += 10}>+</button>
     <button on:click={() =>zoom -= 10}>-</button>
+</div> -->
 </div>
 
 <style>
+    .viewport {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        /* border: solid green 1px; */
+        background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+        flex: 0 0 100%;
+        scroll-snap-align: center;
+    }
+
 	.preview {
 		/* min-width: 100%; */
 		position: absolute;

@@ -1,5 +1,5 @@
 <script>
-	import ImageViewer from "../../../../../../components/ImageViewer/index.svelte";
+	import Carousel from "../../../../../../components/Carousel.svelte";
 	export let data;
 
 	console.log('Image data', data);
@@ -11,7 +11,7 @@
 
 <div class="fullpage">
 	<div class="imgviewer">
-		<ImageViewer imgData={data.imgData} />
+		<Carousel imgData={data.imgData} />
 	</div>
 
 	<div class="thumbnails">
