@@ -64,9 +64,6 @@
         width: 100%;
         height: 100%;
         /* border: solid green 1px; */
-        background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
-        flex: 0 0 100%;
-        scroll-snap-align: center;
     }
 
 	.preview {
