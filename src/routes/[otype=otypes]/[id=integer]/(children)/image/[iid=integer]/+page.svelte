@@ -3,6 +3,10 @@
 	export let data;
 
 	console.log('Image data', data);
+
+	$: iids = data.children.map(ch => ch.id);
+	$: imgIndex = iids.indexOf(data.imgData.id);
+	console.log("imgIndex", imgIndex);
 </script>
 
 <div class="fullpage">
@@ -55,6 +59,10 @@
 
 <div class="back">
 	<a href="/{data.otype}/{data.obj['@id']}">Back to Dataset</a>
+
+	<a href="/{data.otype}/{data.obj['@id']}/{data.chType}/{iids[imgIndex - 1]}">Prev</a>
+	<a href="/{data.otype}/{data.obj['@id']}/{data.chType}/{iids[imgIndex + 1]}">Next</a>
+
 </div>
 
 <style>
