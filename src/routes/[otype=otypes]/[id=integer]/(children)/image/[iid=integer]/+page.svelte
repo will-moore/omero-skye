@@ -11,7 +11,11 @@
 
 <div class="fullpage">
 	<div class="imgviewer">
-		<Carousel imgData={data.imgData} />
+		<Carousel
+			imgData={data.imgData}
+			imageIds={iids}
+			baseUrl="/{data.otype}/{data.obj['@id']}/{data.chType}/"
+		/>
 	</div>
 
 	<div class="thumbnails">

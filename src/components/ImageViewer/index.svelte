@@ -29,7 +29,7 @@
 <svelte:window bind:innerWidth bind:innerHeight />
 
 <div class="viewport">
-<!-- <img
+<img
 	class="preview"
 	style:--viewtransitionkey="image-{imgData.id}"
 	style:background-image="url('https://idr.openmicroscopy.org/webclient/render_thumbnail/{imgData.id}/')"
@@ -39,23 +39,21 @@
 	style:top="{(-(imgHeight - (innerHeight - THUMBHEIGHT)) / 2) + dy}px"
 	alt="Thumbnail of {imgData.meta.Name}"
 	src="https://idr.openmicroscopy.org/webclient/render_image/{imgData.id}/"
-/> -->
+/>
 
 <div style:width="100%">
     Image Viewer
 </div>
 
 
-<!-- <div class="dims">
-	<p>Inner Width: {innerWidth}</p>
-	<p>Inner Height: {innerHeight}</p>
-    <p>imgWiderThanViewport: {imgWiderThanViewport}</p>
+<div class="dims">
+    <p>Image ID: {imgData.id}</p>
     <p>imgWidth: {imgWidth}</p>
     <p>imgHeight: {imgHeight}</p>
     <p>Zoom: {zoom}</p>
     <button on:click={() =>zoom += 10}>+</button>
     <button on:click={() =>zoom -= 10}>-</button>
-</div> -->
+</div>
 </div>
 
 <style>
