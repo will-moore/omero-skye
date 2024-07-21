@@ -10,11 +10,14 @@
 	import { preloadData, replaceState, goto } from '$app/navigation';
 
 	export let imgData;
+	/** @type {number[]} */
 	export let imageIds;
+	/** @type {string} */
 	export let baseUrl;
 
 	$: imgIndex = imageIds.indexOf(imgData.id);
 
+	/** @type {(imageId: number) => Promise<void>} */
 	async function navigateToImage(imageId) {
 		let href = `${baseUrl}${imageId}`;
 		console.log('href', href);
@@ -24,6 +27,7 @@
 
 		if (result.type === 'loaded' && result.status === 200) {
 			replaceState(href, {});
+			console.log("Updating imgData...")
 			imgData = result.data.imgData;
 		} else {
 			// something bad happened! try navigating
@@ -33,7 +37,6 @@
 
 	function handleScrollEnd(evt) {
 		console.log('scrollEnd', evt.target.clientWidth, evt.target.scrollLeft);
-		console.log("scrollEnd imgIndex", imgIndex, imageIds);
 		if (evt.target.scrollLeft == 0) {
 			// prev
 			navigateToImage(imageIds[imgIndex - 1]);
@@ -49,6 +52,7 @@
 	});
 	// when imgData changes...
 	$: if (imgData.id > 0) {
+		console.log("imgData update -> scrollIntoView()")
 		document.getElementById('selected')?.scrollIntoView();
 	}
 </script>
