@@ -27,22 +27,11 @@
 
 	/** @type {(imageId: number) => Promise<void>} */
 	async function navigateToImage(imageId) {
+		let data = await loadImgData(imageId);
 		let href = `${baseUrl}${imageId}`;
-		console.log('href', href);
-
-		if (imgDataByIds[imageId]) {
-			console.log('Use cached imgData', imgDataByIds[imageId]);
-			imgData = imgDataByIds[imageId];
+		if (data) {
 			replaceState(href, {});
-			return;
-		}
-
-		const result = await preloadData(href);
-		console.log('result', result);
-		if (result.type === 'loaded' && result.status === 200) {
-			replaceState(href, {});
-			console.log('Updating imgData...');
-			imgData = result.data.imgData;
+			imgData = data;
 		} else {
 			// something bad happened! try navigating
 			goto(href);
@@ -60,16 +49,34 @@
 		}
 	}
 
-	// when component mounts, scroll to show selected viewer
-	onMount(() => {
-		document.getElementById(`viewer_1`)?.scrollIntoView();
-	});
+	async function loadImgData(imageId) {
+
+		if (!imgDataByIds[imageId]) {
+			let href = `${baseUrl}${imageId}`;
+			const result = await preloadData(href);
+			if (result.type === 'loaded' && result.status === 200) {
+				console.log("loadImgData ** result ** ", result.data.imgData);
+				imgDataByIds[imageId] = result.data.imgData;
+			}
+		}
+		console.log("loadImgData returns ", imgDataByIds[imageId]);
+		return imgDataByIds[imageId];
+	}
+
+	async function cachePrevNextImgData() {
+		loadImgData(imageIds[imgIndex + 1]);
+		loadImgData(imageIds[imgIndex - 1]);
+	}
+
+	// when component mounts or when imgData changes, cache prev and next
+	// onMount(() => {
+	// 	console.log("onMount() -> cachePrevNextImgData()")
+	// 	cachePrevNextImgData();
+	// });
 	// when imgData changes...
 	$: if (imgData.id > 0) {
-		console.log('imgData update -> scrollIntoView()', imgData.id);
-		imgDataByIds[imgData.id] = imgData;
-		console.log('imgDataByIds', imgDataByIds);
-		document.getElementById(`viewer_1`)?.scrollIntoView();
+		console.log("imgData.id > 0 -> cachePrevNextImgData()")
+		cachePrevNextImgData();
 	}
 
 	function focus(node) {
