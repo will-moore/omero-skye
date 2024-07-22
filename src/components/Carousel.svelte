@@ -1,6 +1,5 @@
 <script>
-    
-    /*
+	/*
         This component is 3 viewers [prev, current, next] in a scrollable panel,
         with the current one shown initially, so user can scroll to prev or next.
         When they do, it trigges a reload / re-render with the new viewer as current etc.
@@ -15,19 +14,34 @@
 	/** @type {string} */
 	export let baseUrl;
 
+	let imgDataByIds = {};
+	imgDataByIds[imgData.id] = imgData;
+
+	console.log('imageIds', imageIds);
+	console.log('imgData.id', imgData.id, imageIds.indexOf(imgData.id));
+
 	$: imgIndex = imageIds.indexOf(imgData.id);
+	$: imgIds = imageIds.slice(imgIndex - 1, imgIndex + 1);
+
+	console.log('imgIndex', imgIndex, 'imgIds', imgIds);
 
 	/** @type {(imageId: number) => Promise<void>} */
 	async function navigateToImage(imageId) {
 		let href = `${baseUrl}${imageId}`;
 		console.log('href', href);
 
+		if (imgDataByIds[imageId]) {
+			console.log('Use cached imgData', imgDataByIds[imageId]);
+			imgData = imgDataByIds[imageId];
+			replaceState(href, {});
+			return;
+		}
+
 		const result = await preloadData(href);
 		console.log('result', result);
-
 		if (result.type === 'loaded' && result.status === 200) {
 			replaceState(href, {});
-			console.log("Updating imgData...")
+			console.log('Updating imgData...');
 			imgData = result.data.imgData;
 		} else {
 			// something bad happened! try navigating
@@ -48,29 +62,45 @@
 
 	// when component mounts, scroll to show selected viewer
 	onMount(() => {
-		document.getElementById('selected')?.scrollIntoView();
+		document.getElementById(`viewer_1`)?.scrollIntoView();
 	});
 	// when imgData changes...
 	$: if (imgData.id > 0) {
-		console.log("imgData update -> scrollIntoView()")
-		document.getElementById('selected')?.scrollIntoView();
+		console.log('imgData update -> scrollIntoView()', imgData.id);
+		imgDataByIds[imgData.id] = imgData;
+		console.log('imgDataByIds', imgDataByIds);
+		document.getElementById(`viewer_1`)?.scrollIntoView();
+	}
+
+	function focus(node) {
+		// the update() method returned from the focus() action will be called whenever
+		// the node element changes, immediately after Svelte has applied updates to the markup
+		// https://svelte.dev/docs/element-directives#use-action
+		const update = () => {
+			console.log('--- focus().... node', node);
+			const item = node.querySelector('.focused-item');
+			if (item) item.scrollIntoView({ block: 'center' });
+		};
+		update();
+
+		return { update };
 	}
 </script>
 
-<div class="container" on:scrollend={handleScrollEnd}>
-	<div class="viewer prev"
-	style:background-image="url('https://idr.openmicroscopy.org/webclient/render_thumbnail/{imageIds[imgIndex - 1]}/')">
-		<h1>Previous</h1>
-		<h1>{imageIds[imgIndex - 1]}</h1>
-	</div>
-	<div class="viewer" id="selected">
-		<ImageViewer {imgData} />
-	</div>
-	<div class="viewer next" 
-	style:background-image="url('https://idr.openmicroscopy.org/webclient/render_thumbnail/{imageIds[imgIndex + 1]}/')">>
-		<h1>Next</h1>
-		<h1>{imageIds[imgIndex + 1]}</h1>
-	</div>
+<div class="container" use:focus={imgIndex} on:scrollend={handleScrollEnd}>
+	{#each imageIds.slice(imgIndex - 1, imgIndex + 2) as iid, key (iid)}
+		<div
+			class="viewer"
+			class:focused-item={key === 1}
+			style:background-image="url('https://idr.openmicroscopy.org/webclient/render_thumbnail/{iid}/')"
+		>
+
+			{#if imgDataByIds[iid]}
+			    <ImageViewer imgData={imgDataByIds[iid]} />
+			{/if}
+		</div>
+	{/each}
+
 </div>
 
 <style>
@@ -83,26 +113,10 @@
 		scroll-snap-type: x mandatory;
 	}
 	.viewer {
-		background: linear-gradient(
-			90deg,
-			rgba(2, 0, 36, 1) 0%,
-			rgba(9, 9, 121, 1) 35%,
-			rgba(0, 212, 255, 1) 100%
-		);
-		flex: 0 0 100%;
-		scroll-snap-align: center;
-	}
-	#selected {
-		background-image: radial-gradient(
-			circle 918px at 13.1% 25.5%,
-			rgba(249, 107, 107, 1) 0%,
-			rgba(247, 231, 172, 1) 48.9%,
-			rgba(173, 247, 172, 1) 90%
-		);
-	}
-	.next, .prev {
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
+		flex: 0 0 100%;
+		scroll-snap-align: center;
 	}
 </style>

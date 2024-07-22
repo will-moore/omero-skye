@@ -44,7 +44,7 @@
 
 <aside>
 	<details>
-		<summary> Info </summary>
+		<summary> Info {data.imgData.id} </summary>
 		<h1>{data.imgData.meta.imageName}</h1>
 		<h2>Image: {data.imgData.id}</h2>
 
@@ -64,8 +64,11 @@
 <div class="back">
 	<a href="/{data.otype}/{data.obj['@id']}">Back to Dataset</a>
 
+	<!--
+		// these don't get updated when we swipe through images
 	<a href="/{data.otype}/{data.obj['@id']}/{data.chType}/{iids[imgIndex - 1]}">Prev</a>
 	<a href="/{data.otype}/{data.obj['@id']}/{data.chType}/{iids[imgIndex + 1]}">Next</a>
+    -->
 
 </div>
 

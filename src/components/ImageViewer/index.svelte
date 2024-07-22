@@ -41,10 +41,6 @@
 	src="https://idr.openmicroscopy.org/webclient/render_image/{imgData.id}/"
 />
 
-<div style:width="100%">
-    Image Viewer
-</div>
-
 
 <div class="dims">
     <p>Image ID: {imgData.id}</p>
