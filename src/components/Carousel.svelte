@@ -4,7 +4,6 @@
         with the current one shown initially, so user can scroll to prev or next.
         When they do, it trigges a reload / re-render with the new viewer as current etc.
     */
-	import { onMount } from 'svelte';
 	import ImageViewer from './ImageViewer/index.svelte';
 	import { preloadData, replaceState, goto } from '$app/navigation';
 
@@ -17,13 +16,8 @@
 	let imgDataByIds = {};
 	imgDataByIds[imgData.id] = imgData;
 
-	console.log('imageIds', imageIds);
-	console.log('imgData.id', imgData.id, imageIds.indexOf(imgData.id));
-
 	$: imgIndex = imageIds.indexOf(imgData.id);
 	$: imgIds = imageIds.slice(imgIndex - 1, imgIndex + 1);
-
-	console.log('imgIndex', imgIndex, 'imgIds', imgIds);
 
 	/** @type {(imageId: number) => Promise<void>} */
 	async function navigateToImage(imageId) {
@@ -39,7 +33,6 @@
 	}
 
 	function handleScrollEnd(evt) {
-		console.log('scrollEnd', evt.target.clientWidth, evt.target.scrollLeft);
 		if (evt.target.scrollLeft == 0) {
 			// prev
 			navigateToImage(imageIds[imgIndex - 1]);
@@ -50,16 +43,13 @@
 	}
 
 	async function loadImgData(imageId) {
-
 		if (!imgDataByIds[imageId]) {
 			let href = `${baseUrl}${imageId}`;
 			const result = await preloadData(href);
 			if (result.type === 'loaded' && result.status === 200) {
-				console.log("loadImgData ** result ** ", result.data.imgData);
 				imgDataByIds[imageId] = result.data.imgData;
 			}
 		}
-		console.log("loadImgData returns ", imgDataByIds[imageId]);
 		return imgDataByIds[imageId];
 	}
 
@@ -68,14 +58,8 @@
 		loadImgData(imageIds[imgIndex - 1]);
 	}
 
-	// when component mounts or when imgData changes, cache prev and next
-	// onMount(() => {
-	// 	console.log("onMount() -> cachePrevNextImgData()")
-	// 	cachePrevNextImgData();
-	// });
-	// when imgData changes...
+	// when imgData changes, cache prev and next imgData...
 	$: if (imgData.id > 0) {
-		console.log("imgData.id > 0 -> cachePrevNextImgData()")
 		cachePrevNextImgData();
 	}
 
@@ -84,7 +68,6 @@
 		// the node element changes, immediately after Svelte has applied updates to the markup
 		// https://svelte.dev/docs/element-directives#use-action
 		const update = () => {
-			console.log('--- focus().... node', node);
 			const item = node.querySelector('.focused-item');
 			if (item) item.scrollIntoView({ block: 'center' });
 		};
@@ -101,13 +84,11 @@
 			class:focused-item={key === 1}
 			style:background-image="url('https://idr.openmicroscopy.org/webclient/render_thumbnail/{iid}/')"
 		>
-
 			{#if imgDataByIds[iid]}
-			    <ImageViewer imgData={imgDataByIds[iid]} />
+				<ImageViewer imgData={imgDataByIds[iid]} />
 			{/if}
 		</div>
 	{/each}
-
 </div>
 
 <style>
