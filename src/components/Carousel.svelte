@@ -106,5 +106,6 @@
 		background-position: center;
 		flex: 0 0 100%;
 		scroll-snap-align: center;
+		position: relative;
 	}
 </style>

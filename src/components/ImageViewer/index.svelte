@@ -43,14 +43,32 @@
 
 
 <div class="dims">
-    <p>Image ID: {imgData.id}</p>
-    <p>imgWidth: {imgWidth}</p>
-    <p>imgHeight: {imgHeight}</p>
     <p>Zoom: {zoom}</p>
     <button on:click={() =>zoom += 10}>+</button>
     <button on:click={() =>zoom -= 10}>-</button>
 </div>
 </div>
+
+<aside>
+	<details>
+		<summary> Info {imgData.id} </summary>
+		<h1>{imgData.meta.imageName}</h1>
+		<h2>Image: {imgData.id}</h2>
+
+		<a href="/image/{imgData.id}/annotations">Annotations</a> |
+		<a href="https://idr.openmicroscopy.org/webclient/img_detail/{imgData.id}/"
+			>Open in iviewer</a
+		>
+
+		<table>
+			<tbody>
+				<tr><td>Size X/Y:</td><td>{imgData.size.width} x {imgData.size.height}</td></tr>
+                <tr><td>Size Z/Time:</td><td>{imgData.size.z} x {imgData.size.t}</td></tr>
+                <tr><td>Pixels Type</td><td>{imgData.meta.pixelsType}</td></tr>
+			</tbody>
+		</table>
+	</details>
+</aside>
 
 <style>
     .viewport {
@@ -70,10 +88,19 @@
 		view-transition-name: var(--viewtransitionkey);
 	}
 
-	.dims {
+	.dims, aside {
 		position: absolute;
         top: 100px;
-        left: 10px;
         background-color: white;
+        padding: 10px;
 	}
+
+    .dims {
+        left: 10px;
+    }
+    aside {
+        top: 10px;
+        right: 10px;
+        max-width: calc(100% - 20px);
+    }
 </style>

@@ -42,24 +42,6 @@
 	</div>
 </div>
 
-<aside>
-	<details>
-		<summary> Info {data.imgData.id} </summary>
-		<h1>{data.imgData.meta.imageName}</h1>
-		<h2>Image: {data.imgData.id}</h2>
-
-		<a href="/image/{data.imgData.id}/annotations">Annotations</a> |
-		<a href="https://idr.openmicroscopy.org/webclient/img_detail/{data.params.iid}/"
-			>Open in iviewer</a
-		>
-
-		<table>
-			<tbody>
-				<tr><td>Size:</td><td>{data.imgData.size.width} x {data.imgData.size.height}</td></tr>
-			</tbody>
-		</table>
-	</details>
-</aside>
 
 <div class="back">
 	<a href="/{data.otype}/{data.obj['@id']}">Back to Dataset</a>
@@ -81,7 +63,6 @@
 		flex-direction: column;
 	}
 
-	aside,
 	.back {
 		position: fixed;
 		top: 10px;
@@ -90,9 +71,6 @@
 	}
 	.back {
 		left: 10px;
-	}
-	aside {
-		right: 10px;
 	}
 
 	.thumbnails {
