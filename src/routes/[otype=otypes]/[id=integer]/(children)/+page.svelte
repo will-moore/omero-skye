@@ -5,6 +5,9 @@
  -->
 <script>
 	export let data;
+
+	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
+
 </script>
 
 <svelte:head>
@@ -31,7 +34,7 @@
 							class="thumbnail"
 							alt="Thumbnail of {child.name}"
 							loading="lazy"
-							src="https://idr.openmicroscopy.org/webclient/render_thumbnail/{child.id}/"
+							src="{BASE_URL}/webclient/render_thumbnail/{child.id}/"
 						/>
 						{child.name}
 					</a>

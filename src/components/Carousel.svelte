@@ -6,6 +6,7 @@
     */
 	import ImageViewer from './ImageViewer/index.svelte';
 	import { preloadData, replaceState, goto } from '$app/navigation';
+	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
 
 	export let imgData;
 	/** @type {number[]} */
@@ -87,7 +88,7 @@
 		<div
 			class="viewer"
 			class:focused-item={iid === imageIds[imgIndex]}
-			style:background-image="url('https://idr.openmicroscopy.org/webclient/render_thumbnail/{iid}/')"
+			style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{iid}/')"
 		>
 			{#if imgDataByIds[iid]}
 				<ImageViewer imgData={imgDataByIds[iid]} />

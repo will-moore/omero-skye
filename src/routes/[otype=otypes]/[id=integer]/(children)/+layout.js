@@ -2,6 +2,8 @@
 // Pages below this layout, such as /project/ID or /dataset/ID or /dataset/ID/image/IID
 // all need child objects loaded (datasets or images)
 
+import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
+
 export async function load({ fetch, params }) {
 
 	// Load children...
@@ -18,7 +20,7 @@ export async function load({ fetch, params }) {
 
 	let children = [];
 	if (chType) {
-		const childData = await fetch(`https://idr.openmicroscopy.org/webclient/api/${chTypePlural}/?id=${params.id}`)
+		const childData = await fetch(`${BASE_URL}/webclient/api/${chTypePlural}/?id=${params.id}`)
 			.then(rsp => rsp.json());
 		children = childData[chTypePlural];
 	}

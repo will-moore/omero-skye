@@ -1,4 +1,6 @@
 <script>
+    import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
+
 	export let imgData;
 
 	let innerWidth = 0;
@@ -32,13 +34,13 @@
 <img
 	class="preview"
 	style:--viewtransitionkey="image-{imgData.id}"
-	style:background-image="url('https://idr.openmicroscopy.org/webclient/render_thumbnail/{imgData.id}/')"
+	style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{imgData.id}/')"
 	style:width="{imgWidth}px"
 	style:height="{imgHeight}px"
 	style:left="{(-(imgWidth - innerWidth) / 2) + dx}px"
 	style:top="{(-(imgHeight - (innerHeight - THUMBHEIGHT)) / 2) + dy}px"
 	alt="Thumbnail of {imgData.meta.Name}"
-	src="https://idr.openmicroscopy.org/webclient/render_image/{imgData.id}/"
+	src="{BASE_URL}/webclient/render_image/{imgData.id}/"
 />
 
 
@@ -56,7 +58,7 @@
 		<h2>Image: {imgData.id}</h2>
 
 		<a href="/image/{imgData.id}/annotations">Annotations</a> |
-		<a href="https://idr.openmicroscopy.org/webclient/img_detail/{imgData.id}/"
+		<a href="{BASE_URL}/webclient/img_detail/{imgData.id}/"
 			>Open in iviewer</a
 		>
 

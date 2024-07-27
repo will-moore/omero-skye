@@ -1,5 +1,7 @@
 <script>
 	import Carousel from "../../../../../../components/Carousel.svelte";
+	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
+
 	export let data;
 
 	console.log('Image data', data);
@@ -28,13 +30,13 @@
 						class="thumbnail"
 						loading="lazy"
 						alt="Thumbnail of {child.name}"
-						src="https://idr.openmicroscopy.org/webclient/render_thumbnail/{child.id}/"
+						src="{BASE_URL}/webclient/render_thumbnail/{child.id}/"
 					/>
 				{:else}
 					<img
 						class="thumbnail selected"
 						alt="Thumbnail of {child.name}"
-						src="https://idr.openmicroscopy.org/webclient/render_thumbnail/{child.id}/"
+						src="{BASE_URL}/webclient/render_thumbnail/{child.id}/"
 					/>
 				{/if}
 			</a>

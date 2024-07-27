@@ -1,4 +1,5 @@
 
+import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
 
 export async function load({ fetch, params }) {
 	console.log('annotations params', params, params.otype);
@@ -10,7 +11,7 @@ export async function load({ fetch, params }) {
         "CommentAnnotationI": "Comments",
         "LongAnnotationI": "Rating",  // TODO: check namespace for rating
     }
-    const url = `https://idr.openmicroscopy.org/webclient/api/annotations/?${params.otype}=${params.id}`
+    const url = `${BASE_URL}/webclient/api/annotations/?${params.otype}=${params.id}`
 	const res = await fetch(url);
 	const jsonData = await res.json();
     console.log('jsonData', jsonData);
