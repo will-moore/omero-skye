@@ -17,7 +17,6 @@
 	imgDataByIds[imgData.id] = imgData;
 
 	$: imgIndex = imageIds.indexOf(imgData.id);
-	$: imgIds = imageIds.slice(imgIndex - 1, imgIndex + 1);
 
 	/** @type {(imageId: number) => Promise<void>} */
 	async function navigateToImage(imageId) {
@@ -39,6 +38,9 @@
 		} else if (evt.target.scrollLeft > evt.target.clientWidth) {
 			// next
 			navigateToImage(imageIds[imgIndex + 1]);
+		} else if (imgIndex == 0 && evt.target.scrollLeft > 0) {
+			// next
+			navigateToImage(imageIds[imgIndex + 1]);
 		}
 	}
 
@@ -55,7 +57,9 @@
 
 	async function cachePrevNextImgData() {
 		loadImgData(imageIds[imgIndex + 1]);
-		loadImgData(imageIds[imgIndex - 1]);
+		if (imgIndex > 0) {
+			loadImgData(imageIds[imgIndex - 1]);
+		}
 	}
 
 	// when imgData changes, cache prev and next imgData...
@@ -78,10 +82,11 @@
 </script>
 
 <div class="container" use:focus={imgIndex} on:scrollend={handleScrollEnd}>
-	{#each imageIds.slice(imgIndex - 1, imgIndex + 2) as iid, key (iid)}
+
+	{#each imageIds.slice(Math.max(imgIndex - 1, 0), imgIndex + 2) as iid, key (iid)}
 		<div
 			class="viewer"
-			class:focused-item={key === 1}
+			class:focused-item={iid === imageIds[imgIndex]}
 			style:background-image="url('https://idr.openmicroscopy.org/webclient/render_thumbnail/{iid}/')"
 		>
 			{#if imgDataByIds[iid]}
