@@ -6,6 +6,9 @@
 
 	console.log('Image data', data);
 
+	// This is bound to child Carousel
+	let imgData = data.imgData;
+
 	$: iids = data.children.map(ch => ch.id);
 	$: imgIndex = iids.indexOf(data.imgData.id);
 	console.log("imgIndex", imgIndex);
@@ -14,7 +17,7 @@
 <div class="fullpage">
 	<div class="imgviewer">
 		<Carousel
-			imgData={data.imgData}
+			bind:imgData={imgData}
 			imageIds={iids}
 			baseUrl="/{data.otype}/{data.obj['@id']}/{data.chType}/"
 		/>
@@ -25,20 +28,13 @@
 			<a href="/{data.otype}/{data.obj['@id']}/{data.chType}/{child.id}"
 			data-sveltekit-replacestate
 			>
-				{#if child.id != data.params.iid}
-					<img
-						class="thumbnail"
-						loading="lazy"
-						alt="Thumbnail of {child.name}"
-						src="{BASE_URL}/webclient/render_thumbnail/{child.id}/"
-					/>
-				{:else}
-					<img
-						class="thumbnail selected"
-						alt="Thumbnail of {child.name}"
-						src="{BASE_URL}/webclient/render_thumbnail/{child.id}/"
-					/>
-				{/if}
+				<img
+					class="thumbnail"
+					class:selected={child.id == imgData.id}
+					loading="lazy"
+					alt="Thumbnail of {child.name}"
+					src="{BASE_URL}/webclient/render_thumbnail/{child.id}/"
+				/>
 			</a>
 		{/each}
 	</div>
