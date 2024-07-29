@@ -20,7 +20,6 @@
 	$: viewportRatio = innerWidth / (innerHeight - THUMBHEIGHT);
 	let imageRatio = imgData.size.width / imgData.size.height;
 	$: imgWiderThanViewport = imageRatio > viewportRatio;
-	console.log('imgTallerThanViewport', imgWiderThanViewport);
 
 	$: imgWidth = zoom / 100 * (imgWiderThanViewport ? innerWidth : (innerHeight - THUMBHEIGHT) * imageRatio);
 	$: imgHeight = zoom / 100 * (imgWiderThanViewport ? innerWidth / imageRatio : innerHeight - THUMBHEIGHT);

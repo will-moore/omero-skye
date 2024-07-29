@@ -63,8 +63,11 @@
 		}
 	}
 
-	// when imgData changes, cache prev and next imgData...
+	// when imgData changes...
 	$: if (imgData.id > 0) {
+		// update imgDataByIds with the new imgData
+		imgDataByIds[imgData.id] = imgData;
+		// cache prev and next imgData...
 		cachePrevNextImgData();
 	}
 
@@ -82,18 +85,33 @@
 	}
 </script>
 
-<div class="container" use:focus={imgIndex} on:scrollend={handleScrollEnd}>
+<div class="imgviewer">
+	<div class="container" use:focus={imgIndex} on:scrollend={handleScrollEnd}>
+		{#each imageIds.slice(Math.max(imgIndex - 1, 0), imgIndex + 2) as iid, key (iid)}
+			<div
+				class="viewer"
+				class:focused-item={iid === imageIds[imgIndex]}
+				style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{iid}/')"
+			>
+				{#if imgDataByIds[iid]}
+					<ImageViewer imgData={imgDataByIds[iid]} />
+				{/if}
+			</div>
+		{/each}
+	</div>
+</div>
 
-	{#each imageIds.slice(Math.max(imgIndex - 1, 0), imgIndex + 2) as iid, key (iid)}
-		<div
-			class="viewer"
-			class:focused-item={iid === imageIds[imgIndex]}
-			style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{iid}/')"
-		>
-			{#if imgDataByIds[iid]}
-				<ImageViewer imgData={imgDataByIds[iid]} />
-			{/if}
-		</div>
+<div class="thumbnails">
+	{#each imageIds as iid (iid)}
+		<a href="{baseUrl}{iid}" data-sveltekit-replacestate>
+			<img
+				class="thumbnail"
+				class:selected={iid == imageIds[imgIndex]}
+				loading="lazy"
+				alt="Thumbnail of Image: {iid}"
+				src="{BASE_URL}/webclient/render_thumbnail/{iid}/"
+			/>
+		</a>
 	{/each}
 </div>
 
@@ -113,5 +131,30 @@
 		flex: 0 0 100%;
 		scroll-snap-align: center;
 		position: relative;
+	}
+
+	.imgviewer {
+		flex: 1 0 auto;
+	}
+
+	.thumbnails {
+		display: flex;
+		overflow-x: scroll;
+		flex: 0 1 54px;
+		z-index: 1;
+		background: white;
+	}
+
+	.thumbnail {
+		max-width: 48px;
+		max-height: 48px;
+		margin: 3px;
+	}
+	.selected {
+		border: solid red 5px;
+	}
+
+	.imgviewer {
+		flex: 1 0 auto;
 	}
 </style>
