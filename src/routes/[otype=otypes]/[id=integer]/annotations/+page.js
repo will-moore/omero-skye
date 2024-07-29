@@ -2,7 +2,6 @@
 import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
 
 export async function load({ fetch, params }) {
-	console.log('annotations params', params, params.otype);
 
     let annTypes = {
         "MapAnnotationI": "Key-Value Pairs",
@@ -14,7 +13,6 @@ export async function load({ fetch, params }) {
     const url = `${BASE_URL}/webclient/api/annotations/?${params.otype}=${params.id}`
 	const res = await fetch(url);
 	const jsonData = await res.json();
-    console.log('jsonData', jsonData);
     // TODO: populate jsonData.annotations with jsonData.experimenters
 
     // organise all annotations by type 'class'

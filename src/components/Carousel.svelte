@@ -75,14 +75,19 @@
 		// the update() method returned from the focus() action will be called whenever
 		// the node element changes, immediately after Svelte has applied updates to the markup
 		// https://svelte.dev/docs/element-directives#use-action
+
+		// Used for the main viewer (only when the page loads, not needed subsequently)
+		// and also for thumbnails slider when selection changes -> scrolls selected to centre
 		const update = () => {
-			const item = node.querySelector('.focused-item');
-			if (item) item.scrollIntoView({ block: 'center' });
+			const item = node.querySelector('.selected');
+			if (item) item.scrollIntoView({ inline: 'center' });
 		};
 		update();
 
 		return { update };
 	}
+
+
 </script>
 
 <div class="imgviewer">
@@ -90,7 +95,7 @@
 		{#each imageIds.slice(Math.max(imgIndex - 1, 0), imgIndex + 2) as iid, key (iid)}
 			<div
 				class="viewer"
-				class:focused-item={iid === imageIds[imgIndex]}
+				class:selected={iid === imageIds[imgIndex]}
 				style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{iid}/')"
 			>
 				{#if imgDataByIds[iid]}
@@ -101,7 +106,7 @@
 	</div>
 </div>
 
-<div class="thumbnails">
+<div class="thumbnails" use:focus={imgIndex}>
 	{#each imageIds as iid (iid)}
 		<a href="{baseUrl}{iid}" data-sveltekit-replacestate>
 			<img
@@ -145,12 +150,14 @@
 		background: white;
 	}
 
+	/* need fixed sizes so that scrollToView can work before thumbs are loaded */
+	/* TODO: Use square with img as background */
 	.thumbnail {
-		max-width: 48px;
-		max-height: 48px;
+		width: 48px;
+		height: 48px;
 		margin: 3px;
 	}
-	.selected {
+	.thumbnails .selected {
 		border: solid red 5px;
 	}
 
