@@ -1,25 +1,14 @@
 <script>
 	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
 
-	import { pinch, pan } from 'svelte-hammer'
-	// import Hammer from 'hammerjs';
-
-	// const events = [
-	// 	'pinch',
-	// 	'pinchstart',
-	// 	'pinchmove',
-	// 	'pinchend',
-	// 	'pinchcancel',
-	// 	'pinchin',
-	// 	'pinchout'
-	// ];
+	// import { pinch, pan } from 'svelte-hammer'
 
 	export let imgData;
 
 	let innerWidth = 0;
 	let innerHeight = 0;
 
-	let panLog = "";
+	let pinchLog = 'ready...';
 
 	$: zoom = 100;
 	$: dx = 0;
@@ -48,35 +37,106 @@
 		zoom = zoom + incr;
 	}
 
-	// function pinch(element) {
-	// 	console.log('init PINCH');
+	function pinch(el) {
+		console.log('init PINCH', el);
 
-	// 	var hammertime = new Hammer(element);
-	// 	hammertime.get('pinch').set({ enable: true });
-	// 	// hammertime.on('pan', function (ev) {
-	// 	// 	console.log(ev);
-	// 	// });
-	// 	for (const event of events) {
-	// 		console.log('add event', event);
-	// 		hammertime.on(event, (ev) => {
-	// 			console.log('pinch...', event, ev)
-	// 			element.dispatchEvent(new CustomEvent(event, { detail: ev }))
-	// 	});
-	// 	}
+		// From https://mdn.github.io/dom-examples/pointerevents/Pinch_zoom_gestures.html
 
-	// 	return {
-	// 		update(opt) {
-	// 			hammertime.get('pinch').set(opt);
-	// 		},
-	// 		destroy() {
-	// 			for (const event of events) {
-	// 				hammertime.off(event);
-	// 			}
-	// 		}
-	// 	};
-	// }
+		// Global vars to cache event state
+		var evCache = new Array();
+		var prevDiff = -1;
 
-	
+		function pointerdown_handler(ev) {
+			// The pointerdown event signals the start of a touch interaction.
+			// This event is cached to support 2-finger gestures
+			evCache.push(ev);
+		}
+
+		function pointermove_handler(ev) {
+			console.log('pointermove_handler', ev);
+			// This function implements a 2-pointer horizontal pinch/zoom gesture.
+			//
+			// If the distance between the two pointers has increased (zoom in),
+			// the taget element's background is changed to "pink" and if the
+			// distance is decreasing (zoom out), the color is changed to "lightblue".
+			//
+			// This function sets the target element's border to "dashed" to visually
+			// indicate the pointer's target received a move event.
+			ev.target.style.border = 'dashed';
+
+			// Find this event in the cache and update its record with this event
+			for (var i = 0; i < evCache.length; i++) {
+				if (ev.pointerId == evCache[i].pointerId) {
+					evCache[i] = ev;
+					break;
+				}
+			}
+
+			// If two pointers are down, check for pinch gestures
+			console.log('evCache.length', evCache.length);
+			if (evCache.length == 2) {
+				// Calculate the distance between the two pointers
+				var curDiff = Math.sqrt(
+					Math.pow(evCache[1].clientX - evCache[0].clientX, 2) +
+						Math.pow(evCache[1].clientY - evCache[0].clientY, 2)
+				);
+
+				if (prevDiff > 0) {
+					if (curDiff > prevDiff) {
+						// The distance between the two pointers has increased
+						pinchLog = 'Pinch moving OUT -> Zoom in';
+						ev.target.style.background = 'pink';
+					}
+					if (curDiff < prevDiff) {
+						// The distance between the two pointers has decreased
+						pinchLog = 'Pinch moving IN -> Zoom out';
+						ev.target.style.background = 'lightblue';
+					}
+				}
+
+				// Cache the distance for the next move event
+				prevDiff = curDiff;
+			}
+		}
+
+		function pointerup_handler(ev) {
+			console.log(ev.type, ev);
+			// Remove this pointer from the cache and reset the target's
+			// background and border
+			remove_event(ev);
+			ev.target.style.background = 'white';
+			ev.target.style.border = '1px solid black';
+
+			// If the number of pointers down is less than two then reset diff tracker
+			if (evCache.length < 2) prevDiff = -1;
+		}
+
+		function remove_event(ev) {
+			// Remove this event from the target's cache
+			for (var i = 0; i < evCache.length; i++) {
+				if (evCache[i].pointerId == ev.pointerId) {
+					evCache.splice(i, 1);
+					break;
+				}
+			}
+		}
+
+		// Install event handlers for the pointer target
+		el.onpointerdown = pointerdown_handler;
+		el.onpointermove = pointermove_handler;
+
+		// Use same handler for pointer{up,cancel,out,leave} events since
+		// the semantics for these events - in this app - are the same.
+		el.onpointerup = pointerup_handler;
+		el.onpointercancel = pointerup_handler;
+		el.onpointerout = pointerup_handler;
+		el.onpointerleave = pointerup_handler;
+
+		return {
+			update(opt) {},
+			destroy() {}
+		};
+	}
 
 	function scrollposition(node, init_w) {
 		// the update() method returned from the scrollposition() action will be called whenever
@@ -108,15 +168,7 @@
 <div
 	class="viewport"
 	use:scrollposition={imgWidth}
-	use:pan
-	on:panstart={({ detail }) => panLog = `panstart ${detail}`}
-	on:panmove={({ detail }) => panLog = `panmove ${detail}`}
-	on:panend={({ detail }) => panLog = `panend ${detail}`}
-
 	use:pinch
-	on:pinchstart={({ detail }) => panLog = `PINCH start ${detail}`}
-	on:pinchmove={({ detail }) => panLog = `PINCH move ${detail}`}
-	on:pinchend={({ detail }) => panLog = `PINCH end ${detail}`}
 	style:width="{innerWidth}px"
 	style:height="{innerHeight}px"
 >
@@ -133,7 +185,7 @@
 		<p>Zoom: {zoom}</p>
 		<button on:click={() => handleZoom(10)}>+</button>
 		<button on:click={() => handleZoom(-10)}>-</button>
-		<p>{panLog}</p>
+		<p>{pinchLog}</p>
 	</div>
 </div>
 
