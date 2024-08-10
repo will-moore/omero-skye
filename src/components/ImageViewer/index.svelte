@@ -8,7 +8,7 @@
 	let innerWidth = 0;
 	let innerHeight = 0;
 
-	let pinchLog = 'ready...';
+	let pinchLog = 'ok...';
 
 	$: zoom = 100;
 	$: dx = 0;
