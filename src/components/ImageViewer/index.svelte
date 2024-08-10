@@ -19,6 +19,8 @@
 	let innerWidth = 0;
 	let innerHeight = 0;
 
+	let panLog = "";
+
 	$: zoom = 100;
 	$: dx = 0;
 	$: dy = 0;
@@ -106,10 +108,15 @@
 <div
 	class="viewport"
 	use:scrollposition={imgWidth}
+	use:pan
+	on:panstart={({ detail }) => panLog = `panstart ${detail}`}
+	on:panmove={({ detail }) => panLog = `panmove ${detail}`}
+	on:panend={({ detail }) => panLog = `panend ${detail}`}
+
 	use:pinch
-	on:pinchstart={({ detail }) => console.log('pinchstart', detail)}
-	on:pinchmove={({ detail }) => console.log('pinchmove', detail)}
-	on:pinchend={({ detail }) => console.log('pinchend', detail)}
+	on:pinchstart={({ detail }) => panLog = `PINCH start ${detail}`}
+	on:pinchmove={({ detail }) => panLog = `PINCH move ${detail}`}
+	on:pinchend={({ detail }) => panLog = `PINCH end ${detail}`}
 	style:width="{innerWidth}px"
 	style:height="{innerHeight}px"
 >
@@ -126,6 +133,7 @@
 		<p>Zoom: {zoom}</p>
 		<button on:click={() => handleZoom(10)}>+</button>
 		<button on:click={() => handleZoom(-10)}>-</button>
+		<p>{panLog}</p>
 	</div>
 </div>
 
