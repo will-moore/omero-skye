@@ -85,12 +85,12 @@
 					if (curDiff > prevDiff) {
 						// The distance between the two pointers has increased
 						pinchLog = 'Pinch moving OUT -> Zoom in';
-						ev.target.style.background = 'pink';
+						handleZoom(2);
 					}
 					if (curDiff < prevDiff) {
 						// The distance between the two pointers has decreased
 						pinchLog = 'Pinch moving IN -> Zoom out';
-						ev.target.style.background = 'lightblue';
+						handleZoom(-2);
 					}
 				}
 
