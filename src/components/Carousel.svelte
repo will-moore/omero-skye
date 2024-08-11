@@ -154,6 +154,8 @@
 
 	.thumbnails {
 		position: fixed;
+		left: 0;
+		right: 0;
 		display: flex;
 		overflow-x: scroll;
 		flex: 0 1 54px;
