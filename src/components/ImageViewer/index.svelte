@@ -20,15 +20,14 @@
 		dy = 0;
 	}
 
-	const THUMBHEIGHT = 50; //approx
-	$: viewportRatio = innerWidth / (innerHeight - THUMBHEIGHT);
+	$: viewportRatio = innerWidth / innerHeight;
 	let imageRatio = imgData.size.width / imgData.size.height;
 	$: imgWiderThanViewport = imageRatio > viewportRatio;
 
 	$: imgWidth =
-		(zoom / 100) * (imgWiderThanViewport ? innerWidth : (innerHeight - THUMBHEIGHT) * imageRatio);
+		(zoom / 100) * (imgWiderThanViewport ? innerWidth : innerHeight * imageRatio);
 	$: imgHeight =
-		(zoom / 100) * (imgWiderThanViewport ? innerWidth / imageRatio : innerHeight - THUMBHEIGHT);
+		(zoom / 100) * (imgWiderThanViewport ? innerWidth / imageRatio : innerHeight);
 
 	function handleZoom(incr) {
 		console.log('handleZoom', incr);
@@ -172,14 +171,20 @@
 	style:width="{innerWidth}px"
 	style:height="{innerHeight}px"
 >
-	<img
-		class="preview"
-		style:--viewtransitionkey="image-{imgData.id}"
-		style:width="{imgWidth}px"
-		style:height="{imgHeight}px"
-		alt="Thumbnail of {imgData.meta.Name}"
-		src="{BASE_URL}/webclient/render_image/{imgData.id}/"
-	/>
+	<!-- ImageWrapper gives the image margin top/bottom so that it is in
+	the centre of the viewport when zoomed out -->
+	<div class="imageWrapper"
+		style:width="{Math.max(imgWidth, innerWidth)}px"
+		style:height="{Math.max(imgHeight, innerHeight)}px"
+		>
+		<img
+			style:--viewtransitionkey="image-{imgData.id}"
+			style:width="{imgWidth}px"
+			style:height="{imgHeight}px"
+			alt="Thumbnail of {imgData.meta.Name}"
+			src="{BASE_URL}/webclient/render_image/{imgData.id}/"
+		/>
+	</div>
 
 	<div class="dims">
 		<p>Zoom: {zoom}</p>
@@ -209,20 +214,19 @@
 </aside>
 
 <style>
+	.imageWrapper {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: white;
+	}
 	.viewport {
 		position: relative;
 		width: 100%;
 		height: 100%;
-		border: solid pink 1px;
 		overflow: auto;
 	}
 
-	.preview {
-		/* min-width: 100%; */
-		/* position: absolute; */
-		/* background-size: cover;
-		background-repeat: no-repeat; */
-	}
 	img {
 		view-transition-name: var(--viewtransitionkey);
 	}

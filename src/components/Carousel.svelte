@@ -14,6 +14,8 @@
 	/** @type {string} */
 	export let baseUrl;
 
+	let showThumbnails = true;
+
 	let imgDataByIds = {};
 	imgDataByIds[imgData.id] = imgData;
 
@@ -95,6 +97,7 @@
 		{#each imageIds.slice(Math.max(imgIndex - 1, 0), imgIndex + 2) as iid, key (iid)}
 			<div
 				class="viewer"
+				on:click={() => showThumbnails = !showThumbnails}
 				class:selected={iid === imageIds[imgIndex]}
 				style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{iid}/')"
 			>
@@ -106,7 +109,9 @@
 	</div>
 </div>
 
-<div class="thumbnails" use:focus={imgIndex}>
+<div class="thumbnails" use:focus={imgIndex}
+	style:bottom={showThumbnails ? 0 : '-60px'}
+	>
 	{#each imageIds as iid (iid)}
 		<a href="{baseUrl}{iid}" data-sveltekit-replacestate>
 			<img
@@ -140,14 +145,21 @@
 
 	.imgviewer {
 		flex: 1 0 auto;
+		position: fixed;
+		inset: 0;
+		background-color: lightgrey;
+		display: flex;
+		flex-direction: column;
 	}
 
 	.thumbnails {
+		position: fixed;
 		display: flex;
 		overflow-x: scroll;
 		flex: 0 1 54px;
-		z-index: 1;
+		z-index: 10;
 		background: white;
+		transition: bottom 0.3s ease-in-out;
 	}
 
 	/* need fixed sizes so that scrollToView can work before thumbs are loaded */
