@@ -100,12 +100,8 @@
 
 		function pointerup_handler(ev) {
 			console.log(ev.type, ev);
-			// Remove this pointer from the cache and reset the target's
-			// background and border
+			// Remove this pointer from the cache
 			remove_event(ev);
-			ev.target.style.background = 'white';
-			ev.target.style.border = '1px solid black';
-
 			// If the number of pointers down is less than two then reset diff tracker
 			if (evCache.length < 2) prevDiff = -1;
 		}
@@ -121,19 +117,32 @@
 		}
 
 		// Install event handlers for the pointer target
+		el.addEventListener("pointerdown", pointerdown_handler)
+		el.addEventListener("pointermove", pointermove_handler)
 		el.onpointerdown = pointerdown_handler;
 		el.onpointermove = pointermove_handler;
 
 		// Use same handler for pointer{up,cancel,out,leave} events since
 		// the semantics for these events - in this app - are the same.
-		el.onpointerup = pointerup_handler;
-		el.onpointercancel = pointerup_handler;
-		el.onpointerout = pointerup_handler;
-		el.onpointerleave = pointerup_handler;
+		// el.onpointerup = pointerup_handler;
+		// el.onpointercancel = pointerup_handler;
+		// el.onpointerout = pointerup_handler;
+		// el.onpointerleave = pointerup_handler;
+		let evts = ["pointerup", "pointercancel", "pointerout", "pointerleave"];
+		for (const evtName of evts){
+			el.addEventListener(evtName, pointerup_handler);
+		}
 
 		return {
 			update(opt) {},
-			destroy() {}
+			destroy() {
+				// element destroyed, remove listeners
+				el.removeEventListener("pointerdown", pointerdown_handler);
+				el.removeEventListener("pointermove", pointermove_handler);
+				for (const evtName of evts){
+					el.removeEventListener(evtName, pointerup_handler);
+				}
+			}
 		};
 	}
 
