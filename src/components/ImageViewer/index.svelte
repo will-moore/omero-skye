@@ -54,15 +54,6 @@
 		function pointermove_handler(ev) {
 			console.log('pointermove_handler', ev);
 			// This function implements a 2-pointer horizontal pinch/zoom gesture.
-			//
-			// If the distance between the two pointers has increased (zoom in),
-			// the taget element's background is changed to "pink" and if the
-			// distance is decreasing (zoom out), the color is changed to "lightblue".
-			//
-			// This function sets the target element's border to "dashed" to visually
-			// indicate the pointer's target received a move event.
-			ev.target.style.border = 'dashed';
-
 			// Find this event in the cache and update its record with this event
 			for (var i = 0; i < evCache.length; i++) {
 				if (ev.pointerId == evCache[i].pointerId) {
@@ -117,21 +108,21 @@
 		}
 
 		// Install event handlers for the pointer target
-		el.addEventListener("pointerdown", pointerdown_handler)
-		el.addEventListener("pointermove", pointermove_handler)
+		// el.addEventListener("pointerdown", pointerdown_handler)
+		// el.addEventListener("pointermove", pointermove_handler)
 		el.onpointerdown = pointerdown_handler;
 		el.onpointermove = pointermove_handler;
 
 		// Use same handler for pointer{up,cancel,out,leave} events since
 		// the semantics for these events - in this app - are the same.
-		// el.onpointerup = pointerup_handler;
-		// el.onpointercancel = pointerup_handler;
-		// el.onpointerout = pointerup_handler;
-		// el.onpointerleave = pointerup_handler;
-		let evts = ["pointerup", "pointercancel", "pointerout", "pointerleave"];
-		for (const evtName of evts){
-			el.addEventListener(evtName, pointerup_handler);
-		}
+		el.onpointerup = pointerup_handler;
+		el.onpointercancel = pointerup_handler;
+		el.onpointerout = pointerup_handler;
+		el.onpointerleave = pointerup_handler;
+		// let evts = ["pointerup", "pointercancel", "pointerout", "pointerleave"];
+		// for (const evtName of evts){
+		// 	el.addEventListener(evtName, pointerup_handler);
+		// }
 
 		return {
 			update(opt) {},
@@ -139,6 +130,7 @@
 				// element destroyed, remove listeners
 				el.removeEventListener("pointerdown", pointerdown_handler);
 				el.removeEventListener("pointermove", pointermove_handler);
+				let evts = ["pointerup", "pointercancel", "pointerout", "pointerleave"];
 				for (const evtName of evts){
 					el.removeEventListener(evtName, pointerup_handler);
 				}
@@ -227,7 +219,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: white;
+		background-color: lightgrey;
 	}
 	.viewport {
 		position: relative;
