@@ -29,6 +29,11 @@
 	$: imgHeight =
 		(zoom / 100) * (imgWiderThanViewport ? innerWidth / imageRatio : innerHeight);
 
+	// point on the image that is at centre of viewport
+	// TODO: update this on pan!
+	let panCentre = {x: 0.5, y: 0.5}
+
+
 	function handleZoom(incr) {
 		// don't zoom below 100%
 		zoom = Math.max(zoom + incr, 100);
@@ -36,7 +41,8 @@
 
 	function handlePinch(event) {
 		pinchLog = "handlePinch: " + event.detail?.ratio;
-		zoom = Math.max(zoom * (event.detail?.ratio || 1));
+		// don't zoom below 100%
+		zoom = Math.max(100, zoom * (event.detail?.ratio || 1));
 	}
 
 	function pinchAction(el) {
@@ -133,9 +139,9 @@
 			// if (item) item.scrollIntoView({ inline: 'center' });
 
 			// let's just centre the image for now...
-			const scrollX = (imgWidth - innerWidth) / 2;
-			const scrollY = 0;
-			// console.log('scrollX', scrollX);
+			// NB: scrollX and scrollY may be negative and therefore ignored
+			const scrollX = (panCentre.x * imgWidth) - (innerWidth * 0.5);
+			const scrollY = (panCentre.y * imgHeight) - (innerHeight * 0.5);
 			node.scroll(scrollX, scrollY);
 		};
 		update();
@@ -224,7 +230,7 @@
 	}
 
 	.dims {
-		left: 10px;
+		left: 100px;
 	}
 	aside {
 		top: 10px;
