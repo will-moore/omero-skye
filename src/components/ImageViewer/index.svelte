@@ -30,15 +30,16 @@
 		(zoom / 100) * (imgWiderThanViewport ? innerWidth / imageRatio : innerHeight);
 
 	function handleZoom(incr) {
-		console.log('handleZoom', incr);
-		// let's just centre the image for now...
-
-		zoom = zoom + incr;
+		// don't zoom below 100%
+		zoom = Math.max(zoom + incr, 100);
 	}
 
-	function pinch(el) {
-		console.log('init PINCH', el);
+	function handlePinch(event) {
+		pinchLog = "handlePinch: " + event.detail?.ratio;
+		zoom = Math.max(zoom * (event.detail?.ratio || 1));
+	}
 
+	function pinchAction(el) {
 		// From https://mdn.github.io/dom-examples/pointerevents/Pinch_zoom_gestures.html
 
 		// Global vars to cache event state
@@ -52,8 +53,7 @@
 		}
 
 		function pointermove_handler(ev) {
-			console.log('pointermove_handler', ev);
-			// This function implements a 2-pointer horizontal pinch/zoom gesture.
+			// This function implements a 2-pointer horizontal Action/zoom gesture.
 			// Find this event in the cache and update its record with this event
 			for (var i = 0; i < evCache.length; i++) {
 				if (ev.pointerId == evCache[i].pointerId) {
@@ -63,7 +63,6 @@
 			}
 
 			// If two pointers are down, check for pinch gestures
-			console.log('evCache.length', evCache.length);
 			if (evCache.length == 2) {
 				// Calculate the distance between the two pointers
 				var curDiff = Math.sqrt(
@@ -72,16 +71,7 @@
 				);
 
 				if (prevDiff > 0) {
-					if (curDiff > prevDiff) {
-						// The distance between the two pointers has increased
-						pinchLog = 'Pinch moving OUT -> Zoom in';
-						handleZoom(2);
-					}
-					if (curDiff < prevDiff) {
-						// The distance between the two pointers has decreased
-						pinchLog = 'Pinch moving IN -> Zoom out';
-						handleZoom(-2);
-					}
+					el.dispatchEvent(new CustomEvent("pinch", { detail: {ratio: curDiff/prevDiff}}));
 				}
 
 				// Cache the distance for the next move event
@@ -90,7 +80,6 @@
 		}
 
 		function pointerup_handler(ev) {
-			console.log(ev.type, ev);
 			// Remove this pointer from the cache
 			remove_event(ev);
 			// If the number of pointers down is less than two then reset diff tracker
@@ -108,21 +97,14 @@
 		}
 
 		// Install event handlers for the pointer target
-		// el.addEventListener("pointerdown", pointerdown_handler)
-		// el.addEventListener("pointermove", pointermove_handler)
 		el.onpointerdown = pointerdown_handler;
 		el.onpointermove = pointermove_handler;
-
 		// Use same handler for pointer{up,cancel,out,leave} events since
 		// the semantics for these events - in this app - are the same.
 		el.onpointerup = pointerup_handler;
 		el.onpointercancel = pointerup_handler;
 		el.onpointerout = pointerup_handler;
 		el.onpointerleave = pointerup_handler;
-		// let evts = ["pointerup", "pointercancel", "pointerout", "pointerleave"];
-		// for (const evtName of evts){
-		// 	el.addEventListener(evtName, pointerup_handler);
-		// }
 
 		return {
 			update(opt) {},
@@ -168,7 +150,8 @@
 <div
 	class="viewport"
 	use:scrollposition={imgWidth}
-	use:pinch
+	use:pinchAction
+	on:pinch={handlePinch}
 	style:width="{innerWidth}px"
 	style:height="{innerHeight}px"
 >
