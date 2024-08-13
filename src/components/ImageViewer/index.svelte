@@ -198,7 +198,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: lightgrey;
+		background-color: transparent;
 	}
 	.viewport {
 		position: relative;
