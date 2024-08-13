@@ -59,6 +59,8 @@
 		}
 
 		function pointermove_handler(ev) {
+			ev.preventDefault();
+
 			// This function implements a 2-pointer horizontal Action/zoom gesture.
 			// Find this event in the cache and update its record with this event
 			for (var i = 0; i < evCache.length; i++) {
@@ -83,6 +85,7 @@
 				// Cache the distance for the next move event
 				prevDiff = curDiff;
 			}
+			return false;
 		}
 
 		function pointerup_handler(ev) {
@@ -204,10 +207,6 @@
 </aside>
 
 <style>
-	/* Disable touch events default behaviour */
-	:global(body){
-		touch-action: none;
-	}
 
 	.imageWrapper {
 		display: flex;
