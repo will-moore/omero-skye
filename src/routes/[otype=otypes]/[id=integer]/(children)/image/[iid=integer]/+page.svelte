@@ -6,27 +6,24 @@
 	$: iids = data.children.map((ch) => ch.id);
 </script>
 
-<div class="fullpage">
+<svelte:head>
+	<title>OMERO {data.imgData.meta.name}</title>
+	<meta name="description" content="Showing data from OMERO, {data.otype}: {data.obj.Name}" />
+</svelte:head>
+
+
 	<Carousel
 		imgData={data.imgData}
 		imageIds={iids}
 		baseUrl="/{data.otype}/{data.obj['@id']}/{data.chType}/"
 	/>
-</div>
+
 
 <div class="back">
 	<a href="/{data.otype}/{data.obj['@id']}">Back to Dataset</a>
 </div>
 
 <style>
-	.fullpage {
-		position: fixed;
-		inset: 0;
-		background-color: lightgrey;
-		display: flex;
-		flex-direction: column;
-	}
-
 	.back {
 		position: fixed;
 		left: 10px;
