@@ -207,7 +207,12 @@
 </aside>
 
 <style>
-
+	/* Disable touch events default behaviour */
+	/* NB: need to disable eager fetching of links on hover as loading this style
+	  will break other pages (E.g. Dataset page) */
+	:global(body){
+		touch-action: none;
+	}
 	.imageWrapper {
 		display: flex;
 		justify-content: center;
