@@ -6,6 +6,11 @@
 	$: iids = data.children.map((ch) => ch.id);
 </script>
 
+<svelte:head>
+	<title>OMERO {data.imgData.meta.imageName}</title>
+	<meta name="description" content="Showing data from OMERO, {data.otype}: {data.obj.Name}" />
+</svelte:head>
+
 
 	<Carousel
 		imgData={data.imgData}

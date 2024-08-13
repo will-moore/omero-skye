@@ -11,8 +11,8 @@
 </script>
 
 <svelte:head>
-	<title>{data.otype}</title>
-	<meta name="description" content="Showing data from OMERO" />
+	<title>OMERO {data.obj.Name}</title>
+	<meta name="description" content="Showing data from OMERO, {data.otype}: {data.obj.Name}" />
 </svelte:head>
 
 <div class="text-column">
