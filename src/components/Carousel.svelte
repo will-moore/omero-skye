@@ -128,7 +128,9 @@
 <style>
 
 	/* 'fixed' to cover whole screen */
+	/* Disable touch events default behaviour */
 	.imgviewer {
+		touch-action: none;
 		position: fixed;
 		inset: 0;
 		background-color: lightgrey;
