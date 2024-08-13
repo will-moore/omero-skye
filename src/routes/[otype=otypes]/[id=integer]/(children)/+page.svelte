@@ -1,13 +1,12 @@
-
 <!-- 
 	Url like /project/ID or /dataset/ID or /screen/ID
 	/(children)/ group (for loading children) is not included in URL
  -->
 <script>
+	import ContainerObj from '../../../../components/ContainerObj.svelte';
 	export let data;
 
 	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
-
 </script>
 
 <svelte:head>
@@ -16,7 +15,6 @@
 </svelte:head>
 
 <div class="text-column">
-
 	<div class="header">
 		<h1>{data.obj.Name}</h1>
 		<h2>{data.otype}:{data.obj['@id']}</h2>
@@ -39,12 +37,12 @@
 						{child.name}
 					</a>
 				{:else}
-					<a href="/{data.chType}/{child.id}">
-						{child.name}
-						{#if child?.childCount}
-							({child.childCount})
-						{/if}
-					</a>
+					<ContainerObj
+						dataType={data.chType}
+						objId={child.id}
+						name={child.name}
+						childCount={child.childCount}
+					/>
 				{/if}
 			</li>
 		{/each}
@@ -52,7 +50,9 @@
 </div>
 
 <style>
-
+	.header {
+		margin: 10px;
+	}
 	.thumbnail {
 		width: 48px;
 		height: 48px;

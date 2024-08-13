@@ -1,4 +1,5 @@
 <script>
+	import ContainerObj from '../components/ContainerObj.svelte';
 	export let data;
 </script>
 
@@ -16,14 +17,28 @@
 <h3>Projects</h3>
 <ul>
 	{#each data.projects as project}
-		<li><a href="project/{project.id}">{project.name} ({project.childCount})</a></li>
+		<li>
+			<ContainerObj
+				dataType={'project'}
+				objId={project.id}
+				name={project.name}
+				childCount={project.childCount}
+			/>
+		</li>
 	{/each}
 </ul>
 
 <h3>Screens</h3>
 <ul>
 	{#each data.screens as screen}
-		<li><a href="screen/{screen.id}">{screen.name} ({screen.childCount})</a></li>
+		<li>
+			<ContainerObj
+				dataType={'screen'}
+				objId={screen.id}
+				name={screen.name}
+				childCount={screen.childCount}
+			/>
+		</li>
 	{/each}
 </ul>
 
@@ -32,7 +47,8 @@
 		margin: 10px;
 	}
 
-	h3, ul {
+	h3,
+	ul {
 		padding: 10px;
 	}
 

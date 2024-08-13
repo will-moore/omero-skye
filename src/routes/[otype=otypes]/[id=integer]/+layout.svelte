@@ -9,7 +9,7 @@
 	<meta name="description" content="Showing data from OMERO" />
 </svelte:head>
 
-<div class="text-column">
+<div>
 	
     <slot></slot>
 	
