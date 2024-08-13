@@ -8,8 +8,6 @@
 	let innerWidth = 0;
 	let innerHeight = 0;
 
-	let pinchLog = 'ok...';
-
 	$: zoom = 100;
 	$: dx = 0;
 	$: dy = 0;
@@ -33,7 +31,6 @@
 
 
 	function handlePinch(event) {
-		pinchLog = 'handlePinch: ' + event.detail?.ratio;
 		// don't zoom below 100%
 		zoom = Math.max(100, zoom * (event.detail?.ratio || 1));
 	}
