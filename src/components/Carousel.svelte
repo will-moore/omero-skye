@@ -126,6 +126,16 @@
 </div>
 
 <style>
+
+	/* 'fixed' to cover whole screen */
+	.imgviewer {
+		position: fixed;
+		inset: 0;
+		background-color: lightgrey;
+		display: flex;
+		flex-direction: column;
+	}
+
 	.container {
 		width: 100%;
 		height: 100%;
@@ -141,15 +151,6 @@
 		flex: 0 0 100%;
 		scroll-snap-align: center;
 		position: relative;
-	}
-
-	.imgviewer {
-		flex: 1 0 auto;
-		position: fixed;
-		inset: 0;
-		background-color: lightgrey;
-		display: flex;
-		flex-direction: column;
 	}
 
 	.thumbnails {

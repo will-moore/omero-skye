@@ -204,6 +204,11 @@
 </aside>
 
 <style>
+	/* Disable touch events default behaviour */
+	:global(body){
+		touch-action: none;
+	}
+
 	.imageWrapper {
 		display: flex;
 		justify-content: center;
