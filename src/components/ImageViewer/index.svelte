@@ -24,23 +24,16 @@
 	let imageRatio = imgData.size.width / imgData.size.height;
 	$: imgWiderThanViewport = imageRatio > viewportRatio;
 
-	$: imgWidth =
-		(zoom / 100) * (imgWiderThanViewport ? innerWidth : innerHeight * imageRatio);
-	$: imgHeight =
-		(zoom / 100) * (imgWiderThanViewport ? innerWidth / imageRatio : innerHeight);
+	$: imgWidth = (zoom / 100) * (imgWiderThanViewport ? innerWidth : innerHeight * imageRatio);
+	$: imgHeight = (zoom / 100) * (imgWiderThanViewport ? innerWidth / imageRatio : innerHeight);
 
 	// point on the image that is at centre of viewport
 	// TODO: update this on pan!
-	let panCentre = {x: 0.5, y: 0.5}
+	let panCentre = { x: 0.5, y: 0.5 };
 
-
-	function handleZoom(incr) {
-		// don't zoom below 100%
-		zoom = Math.max(zoom + incr, 100);
-	}
 
 	function handlePinch(event) {
-		pinchLog = "handlePinch: " + event.detail?.ratio;
+		pinchLog = 'handlePinch: ' + event.detail?.ratio;
 		// don't zoom below 100%
 		zoom = Math.max(100, zoom * (event.detail?.ratio || 1));
 	}
@@ -79,7 +72,7 @@
 				);
 
 				if (prevDiff > 0) {
-					el.dispatchEvent(new CustomEvent("pinch", { detail: {ratio: curDiff/prevDiff}}));
+					el.dispatchEvent(new CustomEvent('pinch', { detail: { ratio: curDiff / prevDiff } }));
 				}
 
 				// Cache the distance for the next move event
@@ -119,10 +112,10 @@
 			update(opt) {},
 			destroy() {
 				// element destroyed, remove listeners
-				el.removeEventListener("pointerdown", pointerdown_handler);
-				el.removeEventListener("pointermove", pointermove_handler);
-				let evts = ["pointerup", "pointercancel", "pointerout", "pointerleave"];
-				for (const evtName of evts){
+				el.removeEventListener('pointerdown', pointerdown_handler);
+				el.removeEventListener('pointermove', pointermove_handler);
+				let evts = ['pointerup', 'pointercancel', 'pointerout', 'pointerleave'];
+				for (const evtName of evts) {
 					el.removeEventListener(evtName, pointerup_handler);
 				}
 			}
@@ -143,8 +136,8 @@
 
 			// let's just centre the image for now...
 			// NB: scrollX and scrollY may be negative and therefore ignored
-			const scrollX = (panCentre.x * imgWidth) - (innerWidth * 0.5);
-			const scrollY = (panCentre.y * imgHeight) - (innerHeight * 0.5);
+			const scrollX = panCentre.x * imgWidth - innerWidth * 0.5;
+			const scrollY = panCentre.y * imgHeight - innerHeight * 0.5;
 			node.scroll(scrollX, scrollY);
 		};
 		update();
@@ -166,10 +159,11 @@
 >
 	<!-- ImageWrapper gives the image margin top/bottom so that it is in
 	the centre of the viewport when zoomed out -->
-	<div class="imageWrapper"
+	<div
+		class="imageWrapper"
 		style:width="{Math.max(imgWidth, innerWidth)}px"
 		style:height="{Math.max(imgHeight, innerHeight)}px"
-		>
+	>
 		<img
 			style:--viewtransitionkey="image-{imgData.id}"
 			style:width="{imgWidth}px"
@@ -177,13 +171,6 @@
 			alt="Thumbnail of {imgData.meta.Name}"
 			src="{BASE_URL}/webclient/render_image/{imgData.id}/"
 		/>
-	</div>
-
-	<div class="dims">
-		<p>Zoom: {zoom}</p>
-		<button on:click={() => handleZoom(10)}>+</button>
-		<button on:click={() => handleZoom(-10)}>-</button>
-		<p>{pinchLog}</p>
 	</div>
 </div>
 
@@ -224,20 +211,12 @@
 		view-transition-name: var(--viewtransitionkey);
 	}
 
-	.dims,
 	aside {
 		position: absolute;
-		top: 100px;
-		background-color: white;
-		padding: 10px;
-	}
-
-	.dims {
-		left: 100px;
-	}
-	aside {
 		top: 10px;
 		right: 10px;
 		max-width: calc(100% - 20px);
+		background-color: white;
+		padding: 10px;
 	}
 </style>

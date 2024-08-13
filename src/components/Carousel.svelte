@@ -88,8 +88,6 @@
 
 		return { update };
 	}
-
-
 </script>
 
 <div class="imgviewer">
@@ -97,7 +95,7 @@
 		{#each imageIds.slice(Math.max(imgIndex - 1, 0), imgIndex + 2) as iid, key (iid)}
 			<div
 				class="viewer"
-				on:click={() => showThumbnails = !showThumbnails}
+				on:click={() => (showThumbnails = !showThumbnails)}
 				class:selected={iid === imageIds[imgIndex]}
 				style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{iid}/')"
 			>
@@ -109,9 +107,7 @@
 	</div>
 </div>
 
-<div class="thumbnails" use:focus={imgIndex}
-	style:bottom={showThumbnails ? 0 : '-60px'}
-	>
+<div class="thumbnails" use:focus={imgIndex} style:bottom={showThumbnails ? 0 : '-60px'}>
 	{#each imageIds as iid (iid)}
 		<a href="{baseUrl}{iid}" data-sveltekit-replacestate>
 			<img
@@ -126,7 +122,6 @@
 </div>
 
 <style>
-
 	/* 'fixed' to cover whole screen */
 	/* Disable touch events default behaviour */
 	.imgviewer {
