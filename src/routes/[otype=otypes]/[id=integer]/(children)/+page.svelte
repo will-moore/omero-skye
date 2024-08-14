@@ -68,6 +68,7 @@
 		position: sticky;
 		top: 0;
 		background-color: white;
+		z-index: 1000;
 	}
 	.objId {
 		padding-top: 0;
