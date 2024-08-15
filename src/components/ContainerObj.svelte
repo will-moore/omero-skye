@@ -5,8 +5,8 @@
 	export let objId;
 	export let name;
 	export let childCount;
-	export let parentType;
-	export let parentId;
+	export let parentType = undefined;
+	export let parentId = undefined;
 
 	const objColors = {
 		project: 'rgb(131, 143, 163)',
