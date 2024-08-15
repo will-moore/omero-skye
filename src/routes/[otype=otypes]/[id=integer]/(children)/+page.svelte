@@ -7,8 +7,6 @@
 	import { faTags } from '@fortawesome/free-solid-svg-icons'
 	import ContainerObj from '../../../../components/ContainerObj.svelte';
 	export let data;
-
-	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
 </script>
 
 <svelte:head>
@@ -34,25 +32,14 @@
 	<ul>
 		{#each data.children as child}
 			<li>
-				{#if data.chType == 'image'}
-					<a href="/{data.otype}/{data.obj['@id']}/{data.chType}/{child.id}">
-						<img
-							style:--viewtransitionkey="image-{child.id}"
-							class="thumbnail"
-							alt="Thumbnail of {child.name}"
-							loading="lazy"
-							src="{BASE_URL}/webclient/render_thumbnail/{child.id}/"
-						/>
-						{child.name}
-					</a>
-				{:else}
-					<ContainerObj
-						dataType={data.chType}
-						objId={child.id}
-						name={child.name}
-						childCount={child.childCount}
-					/>
-				{/if}
+				<ContainerObj
+					dataType={data.chType}
+					objId={child.id}
+					name={child.name}
+					childCount={child.childCount}
+					parentType={data.otype}
+					parentId={data.obj['@id']}
+				/>
 			</li>
 		{/each}
 	</ul>
@@ -83,10 +70,6 @@
 		flex: 50px 0 0;
 		padding: 10px;
 	}
-	.thumbnail {
-		width: 48px;
-		height: 48px;
-	}
 
 	ul {
 		padding: 10px;
@@ -100,8 +83,5 @@
 		align-items: center;
 		margin: 5px 0;
 		gap: 5px;
-	}
-	img {
-		view-transition-name: var(--viewtransitionkey);
 	}
 </style>
