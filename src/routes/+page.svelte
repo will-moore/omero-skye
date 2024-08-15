@@ -47,6 +47,12 @@
 		margin: 10px;
 	}
 
+	h3 {
+		position: sticky;
+		top: 0;
+		background-color: white;
+		
+	}
 	h3,
 	ul {
 		padding: 10px;

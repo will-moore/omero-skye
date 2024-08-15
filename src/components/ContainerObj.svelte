@@ -48,6 +48,7 @@
     .name {
         flex: auto 1 1;
         padding: 5px;
+        word-break: break-word;
     }
     .childCount {
         flex: 50px 0 0;

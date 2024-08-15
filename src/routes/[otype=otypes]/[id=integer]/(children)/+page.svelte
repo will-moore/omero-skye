@@ -62,6 +62,8 @@
 		padding: 10px;
 		display: flex;
 		flex-direction: row;
+		width: 100%;
+		max-width: 100%;
 	}
 	.header {
 		flex: auto 1 1;
@@ -75,6 +77,7 @@
 	}
 	h1 {
 		line-height: normal;
+		line-break: anywhere;
 	}
 	.annotations {
 		flex: 50px 0 0;
