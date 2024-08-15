@@ -15,7 +15,7 @@
 </svelte:head>
 
 <div class="row header">
-	<div>
+	<div class="name">
 		<h1>{data.obj.Name}</h1>
 	</div>
 	<div class="annotations">
@@ -51,6 +51,7 @@
 		flex-direction: row;
 		width: 100%;
 		max-width: 100%;
+		gap: 10px;
 	}
 	.header {
 		flex: auto 1 1;
@@ -59,6 +60,12 @@
 		background-color: white;
 		z-index: 1000;
 	}
+	.name {
+		flex: auto 1 1;
+	}
+	.annotations {
+		flex: auto 0 0;
+	}
 	.objId {
 		padding-top: 0;
 	}
@@ -66,22 +73,11 @@
 		line-height: normal;
 		line-break: anywhere;
 	}
-	.annotations {
-		flex: 50px 0 0;
-		padding: 10px;
-	}
 
 	ul {
 		padding: 10px;
 	}
 	li {
 		list-style: none;
-	}
-	a {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		margin: 5px 0;
-		gap: 5px;
 	}
 </style>
