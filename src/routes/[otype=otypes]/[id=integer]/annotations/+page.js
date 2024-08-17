@@ -5,7 +5,7 @@ export async function load({ fetch, params }) {
 
     let annTypes = {
         "MapAnnotationI": "Key-Value Pairs",
-        "TagAnnotaionI": "Tags",
+        "TagAnnotationI": "Tags",
         "FileAnnotationI": "Attachments",
         "CommentAnnotationI": "Comments",
         "LongAnnotationI": "Rating",  // TODO: check namespace for rating
