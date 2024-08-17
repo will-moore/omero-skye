@@ -19,4 +19,8 @@
     table {
         font-size: 90%;
     }
+
+    td {
+        line-break: anywhere;
+    }
 </style>

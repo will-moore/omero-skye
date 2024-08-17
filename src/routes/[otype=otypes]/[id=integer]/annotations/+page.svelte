@@ -35,7 +35,7 @@
 {/each}
 
 <style>
-		.row {
+	.row {
 		padding: 0;
 		margin-top: 8px;
 		display: flex;
