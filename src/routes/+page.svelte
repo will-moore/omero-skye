@@ -14,33 +14,37 @@
 	<p>Browsing data from IDR...</p>
 </div>
 
-<h3>Projects</h3>
-<ul>
-	{#each data.projects as project}
-		<li>
-			<ContainerObj
-				dataType={'project'}
-				objId={project.id}
-				name={project.name}
-				childCount={project.childCount}
-			/>
-		</li>
-	{/each}
-</ul>
+<div>
+	<h3>Projects</h3>
+	<ul>
+		{#each data.projects as project}
+			<li>
+				<ContainerObj
+					dataType={'project'}
+					objId={project.id}
+					name={project.name}
+					childCount={project.childCount}
+				/>
+			</li>
+		{/each}
+	</ul>
+</div>
 
-<h3>Screens</h3>
-<ul>
-	{#each data.screens as screen}
-		<li>
-			<ContainerObj
-				dataType={'screen'}
-				objId={screen.id}
-				name={screen.name}
-				childCount={screen.childCount}
-			/>
-		</li>
-	{/each}
-</ul>
+<div>
+	<h3>Screens</h3>
+	<ul>
+		{#each data.screens as screen}
+			<li>
+				<ContainerObj
+					dataType={'screen'}
+					objId={screen.id}
+					name={screen.name}
+					childCount={screen.childCount}
+				/>
+			</li>
+		{/each}
+	</ul>
+</div>
 
 <style>
 	.header {
@@ -51,7 +55,6 @@
 		position: sticky;
 		top: 0;
 		background-color: white;
-		
 	}
 	h3,
 	ul {

@@ -121,6 +121,6 @@
 		border: solid rgb(179, 178, 178) 1px;
 		border-radius: 3px;
 		padding: 0 3px;
-		margin-bottom: 5px;
+		margin-bottom: 8px;
 	}
 </style>
