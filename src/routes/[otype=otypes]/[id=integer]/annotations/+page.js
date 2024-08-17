@@ -12,22 +12,68 @@ export async function load({ fetch, params }) {
     }
     const url = `${BASE_URL}/webclient/api/annotations/?${params.otype}=${params.id}`
 	const res = await fetch(url);
-	const jsonData = await res.json();
-    // TODO: populate jsonData.annotations with jsonData.experimenters
+	const data = await res.json();
+
+    var experimenters = [];
+    // var batchAnn = objects.length > 1;
+    if (data.experimenters.length > 0) {
+        // manipulate data...
+        // make an object of eid: experimenter
+        experimenters = data.experimenters.reduce(function(prev, exp){
+            prev[exp.id + ""] = exp;
+            return prev;
+        }, {});
+    }
+
+    var populate_experimenter = function(ann) {
+        if (data.experimenters.length > 0) {
+            ann.owner = experimenters[ann.owner.id];
+        }
+        if (ann.link && ann.link.owner) {
+            ann.link.owner = experimenters[ann.link.owner.id];
+            // AddedBy IDs for filtering
+            ann.addedBy = [ann.link.owner.id];
+        }
+        return ann;
+    };
+
+    // Populate experimenters within anns
+    var anns = data.annotations.map(populate_experimenter);
+
+    var inh_map_annotations = [];
+    if (data.hasOwnProperty("parents")){
+        data.parents.annotations.forEach(function(ann) {
+            ann = populate_experimenter(ann);
+            let class_ = ann.link.parent.class;
+            let id_ = '' + ann.link.parent.id;
+            let children = data.parents.lineage[class_][id_];
+            class_ = children[0].class;
+            ann.childClass = class_.substring(0, class_.length - 1);
+            ann.childNames = [];
+            if (children[0].hasOwnProperty("name")){
+                for(let j = 0; j < children.length; j++){
+                    ann.childNames.push(children[j].name);
+                }
+            }
+            inh_map_annotations.push(ann);
+        });
+    }
+
+    console.log(data);
 
     // organise all annotations by type 'class'
-    const anns = {}
-    jsonData.annotations.forEach(ann => {
+    const annsByType = {}
+    data.annotations.forEach(ann => {
         let annType = ann.class;
         // Convert key to e.g. "Key-Value Pairs"
         if (annTypes[annType]) {
             annType = annTypes[annType];
         }
-        if (!anns[annType]) {
-            anns[annType] = [];
+        if (!annsByType[annType]) {
+            annsByType[annType] = [];
         }
-        anns[annType].push(ann);
+        annsByType[annType].push(ann);
     });
 
-	return {annotations: anns};
+	return {annotations: annsByType};
 }

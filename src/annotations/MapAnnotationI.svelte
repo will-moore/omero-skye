@@ -8,8 +8,15 @@
 <table>
     {#each ann.values as kvp}
     <tr>
-        <td>{kvp[0]}</td>
+        <th>{kvp[0]}</th>
         <td>{kvp[1]}</td>
     </tr>
     {/each}
 </table>
+
+
+<style>
+    table {
+        font-size: 90%;
+    }
+</style>

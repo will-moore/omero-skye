@@ -72,6 +72,7 @@
 	.thumbnail {
 		width: 48px;
 		height: 48px;
+        display: block;
 	}
 	img {
 		view-transition-name: var(--viewtransitionkey);
