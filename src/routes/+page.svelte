@@ -2,23 +2,26 @@
 	import ContainerObj from '../components/ContainerObj.svelte';
 	import Fa from 'svelte-fa';
 	import { faXmark } from '@fortawesome/free-solid-svg-icons';
-	import { goto } from '$app/navigation';
+	import { replaceState } from '$app/navigation';
 
 	export let data;
 
-	let filterText = '';
+	// initialise the filter based on ?filter=text from URL
+	let filterText = data.filter;
 
+	/** @type {(txt: string) => void} */
 	function setFilterText(txt) {
-		console.log('setFilterText', txt);
-		filterText = txt;
+		// Do the actual filtering
+		filterText = txt || '';
 
-		// const search = (new URLSearchParams({filter:filterText})).toString();
-		// // goto('?' + search);
-
-		// let old = new URL(window.location.href);
-
-		// history.pushState({filterText}, "", `${old.pathname}?${search}`);
-		// history.replaceState({filterText}, "", `${old.pathname}?${search}`);
+		// Update URL with ?filter=filterText
+		let old = new URL(window.location.href);
+		let url = old.pathname;
+		if (txt) {
+			const search = new URLSearchParams({ filter: filterText }).toString();
+			url = `${url}?${search}`;
+		}
+		replaceState(url, { filterText });
 	}
 
 	$: projects = data.projects.filter((project) =>
@@ -55,7 +58,7 @@
 		on:input={(e) => setFilterText(e.target.value)}
 		placeholder="Filter by Name"
 	/>
-	<button on:click={() => (filterText = '')} title="Clear filter text">
+	<button on:click={() => setFilterText('')} title="Clear filter text">
 		<Fa icon={faXmark} color="#666" size="lg" />
 	</button>
 </div>
