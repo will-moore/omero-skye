@@ -17,6 +17,13 @@
 <style>
 	nav {
 		padding: 10px;
-		border-bottom: solid grey 1px;
+		border-bottom: solid black 1px;
+		background-color: rgb(33, 37, 41);
+		background: linear-gradient(to top, #46474a, rgb(33, 37, 41));
+	}
+
+	a {
+		color: white;
+		text-decoration: none;
 	}
 </style>

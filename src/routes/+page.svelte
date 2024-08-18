@@ -1,5 +1,41 @@
 <script>
+	import ContainerObj from '../components/ContainerObj.svelte';
+	import Fa from 'svelte-fa';
+	import { faXmark } from '@fortawesome/free-solid-svg-icons';
+	import { goto } from '$app/navigation';
+
 	export let data;
+
+	let filterText = '';
+
+	function setFilterText(txt) {
+		console.log('setFilterText', txt);
+		filterText = txt;
+
+		// const search = (new URLSearchParams({filter:filterText})).toString();
+		// // goto('?' + search);
+
+		// let old = new URL(window.location.href);
+
+		// history.pushState({filterText}, "", `${old.pathname}?${search}`);
+		// history.replaceState({filterText}, "", `${old.pathname}?${search}`);
+	}
+
+	$: projects = data.projects.filter((project) =>
+		project.name.toLowerCase().includes(filterText.toLowerCase())
+	);
+	$: screens = data.screens.filter((screen) =>
+		screen.name.toLowerCase().includes(filterText.toLowerCase())
+	);
+
+	$: projectsFilterMsg =
+		filterText.length > 0
+			? `Showing ${projects.length} out of ${data.projects.length} Projects`
+			: `Projects (${projects.length})`;
+	$: screensFilterMsg =
+		filterText.length > 0
+			? `Showing ${screens.length} out of ${data.screens.length} Screens`
+			: `Screens (${screens.length})`;
 </script>
 
 <svelte:head>
@@ -13,26 +49,82 @@
 	<p>Browsing data from IDR...</p>
 </div>
 
-<h3>Projects</h3>
-<ul>
-	{#each data.projects as project}
-		<li><a href="project/{project.id}">{project.name} ({project.childCount})</a></li>
-	{/each}
-</ul>
+<div class="filter">
+	<input
+		bind:value={filterText}
+		on:input={(e) => setFilterText(e.target.value)}
+		placeholder="Filter by Name"
+	/>
+	<button on:click={() => (filterText = '')} title="Clear filter text">
+		<Fa icon={faXmark} color="#666" size="lg" />
+	</button>
+</div>
 
-<h3>Screens</h3>
-<ul>
-	{#each data.screens as screen}
-		<li><a href="screen/{screen.id}">{screen.name} ({screen.childCount})</a></li>
-	{/each}
-</ul>
+<div>
+	<h3>{projectsFilterMsg}</h3>
+	<ul>
+		{#each projects as project}
+			<li>
+				<ContainerObj
+					dataType={'project'}
+					objId={project.id}
+					name={project.name}
+					childCount={project.childCount}
+				/>
+			</li>
+		{/each}
+	</ul>
+</div>
+
+<div>
+	<h3>{screensFilterMsg}</h3>
+	<ul>
+		{#each screens as screen}
+			<li>
+				<ContainerObj
+					dataType={'screen'}
+					objId={screen.id}
+					name={screen.name}
+					childCount={screen.childCount}
+				/>
+			</li>
+		{/each}
+	</ul>
+</div>
 
 <style>
-	.header {
-		margin: 10px;
+	.header,
+	.filter {
+		padding: 10px;
 	}
 
-	h3, ul {
+	.filter {
+		position: sticky;
+		top: 0;
+		background-color: white;
+		display: flex;
+		flex-direction: row;
+		gap: 10px;
+		z-index: 1000;
+	}
+	.filter input {
+		flex: auto 1 1;
+		height: 30px;
+	}
+	.filter button {
+		flex: 30px 0 0;
+		border: none;
+		background-color: transparent;
+	}
+
+	h3 {
+		position: sticky;
+		top: 40px;
+		background-color: white;
+		z-index: 10;
+	}
+	h3,
+	ul {
 		padding: 10px;
 	}
 
