@@ -26,6 +26,14 @@
 	$: imgWidth = (zoom / 100) * (imgWiderThanViewport ? innerWidth : innerHeight * imageRatio);
 	$: imgHeight = (zoom / 100) * (imgWiderThanViewport ? innerWidth / imageRatio : innerHeight);
 
+	$: theZ = imgData.rdefs.defaultZ;
+	$: theT = imgData.rdefs.defaultT;
+	$: renderQuery = `c=${imgData.channels.map(chMarshal).join(",")}&m=c`;
+
+	function chMarshal(ch, idx) {
+		return `${ch.active ? '' : '-'}${idx + 1}|${ch.window.start}:${ch.window.end}$${ch.color}`;
+	}
+
 	// point on the image that is at centre of viewport
 	// TODO: update this on pan!
 	let panCentre = { x: 0.5, y: 0.5 };
@@ -97,7 +105,7 @@
 			style:width="{imgWidth}px"
 			style:height="{imgHeight}px"
 			alt="Thumbnail of {imgData.meta.Name}"
-			src="{BASE_URL}/webclient/render_image/{imgData.id}/"
+			src="{BASE_URL}/webclient/render_image/{imgData.id}/{theZ}/{theT}/?{renderQuery}"
 		/>
 	</div>
 </div>

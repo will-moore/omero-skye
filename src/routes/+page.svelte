@@ -28,6 +28,11 @@
 		replaceState(`${window.location.pathname}?${params.toString()}`, {});
 	}
 
+	/**
+	 * Filters the projects based on the provided filter string.
+	 * @param {string} filter - The filter string to apply.
+	 * @returns {Array} - The filtered projects.
+	 */
 	$: projects = data.projects.filter((project) =>
 		project.name.toLowerCase().includes(filter.toLowerCase())
 	);
