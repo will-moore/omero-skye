@@ -38,7 +38,7 @@
 		if (evt.target.scrollLeft == 0) {
 			// prev
 			navigateToImage(imageIds[imgIndex - 1]);
-		} else if (evt.target.scrollLeft > evt.target.clientWidth) {
+		} else if (evt.target.scrollLeft > (evt.target.clientWidth * 2)) {
 			// next
 			navigateToImage(imageIds[imgIndex + 1]);
 		} else if (imgIndex == 0 && evt.target.scrollLeft > 0) {
@@ -59,7 +59,9 @@
 	}
 
 	async function cachePrevNextImgData() {
-		loadImgData(imageIds[imgIndex + 1]);
+		if ((imgIndex + 1) < imageIds.length) {
+			loadImgData(imageIds[imgIndex + 1]);
+		}
 		if (imgIndex > 0) {
 			loadImgData(imageIds[imgIndex - 1]);
 		}
@@ -140,6 +142,7 @@
 		flex-direction: row;
 		overflow-x: scroll;
 		scroll-snap-type: x mandatory;
+		gap: 10px;
 	}
 	.viewer {
 		background-size: contain;
