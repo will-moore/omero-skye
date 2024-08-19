@@ -10,13 +10,10 @@
 	let innerHeight = 0;
 
 	$: zoom = 100;
-	$: dx = 0;
-	$: dy = 0;
+
 	// reset zoom and pan when imgData changes (new Image)
 	$: if (imgData.id > 0) {
 		zoom = 100;
-		dx = 0;
-		dy = 0;
 	}
 
 	$: viewportRatio = innerWidth / innerHeight;
@@ -28,14 +25,14 @@
 
 	$: theZ = imgData.rdefs.defaultZ;
 	$: theT = imgData.rdefs.defaultT;
-	$: renderQuery = `c=${imgData.channels.map(chMarshal).join(",")}&m=c`;
+	$: renderQuery = `c=${imgData.channels.map(chMarshal).join(",")}&m=c&p=normal`;
 
 	function chMarshal(ch, idx) {
 		return `${ch.active ? '' : '-'}${idx + 1}|${ch.window.start}:${ch.window.end}$${ch.color}`;
 	}
 
 	// point on the image that is at centre of viewport
-	// TODO: update this on pan!
+	// updated on pan!
 	let panCentre = { x: 0.5, y: 0.5 };
 
 
@@ -58,18 +55,9 @@
 	}
 
 	function scrollposition(node, init_w) {
-		// the update() method returned from the scrollposition() action will be called whenever
-		// the node element changes, immediately after Svelte has applied updates to the markup
-		// https://svelte.dev/docs/element-directives#use-action
-
-		// Used for the main viewer (only when the page loads, not needed subsequently)
-		// and also for thumbnails slider when selection changes -> scrolls selected to centre
+		// node change on zoom triggers this action, which updates scrollPosition
+		// to keep the panCentre the same as it was before the zoom
 		const update = (img_w) => {
-			// console.log('scrollposition', node, img_w);
-			// const item = node.querySelector('.selected');
-			// if (item) item.scrollIntoView({ inline: 'center' });
-
-			// let's just centre the image for now...
 			// NB: scrollX and scrollY may be negative and therefore ignored
 			const scrollX = panCentre.x * imgWidth - innerWidth * 0.5;
 			const scrollY = panCentre.y * imgHeight - innerHeight * 0.5;
