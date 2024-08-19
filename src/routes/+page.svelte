@@ -1,39 +1,46 @@
 <script>
+	import { page } from '$app/stores';
 	import ContainerObj from '../components/ContainerObj.svelte';
 	import Fa from 'svelte-fa';
 	import { faXmark } from '@fortawesome/free-solid-svg-icons';
-	import { goto } from '$app/navigation';
+	import { replaceState } from '$app/navigation';
 
 	export let data;
 
-	let filterText = '';
+	// Local filter state that syncs with the input field
+	let filter = data.filter;
 
-	function setFilterText(txt) {
-		console.log('setFilterText', txt);
-		filterText = txt;
+	function clearFilter() {
+		filter = '';
+		updateFilter();
+	}
 
-		// const search = (new URLSearchParams({filter:filterText})).toString();
-		// // goto('?' + search);
+	// Function to update URL searchParams when filter changes
+	function updateFilter() {
+		const params = new URLSearchParams($page.url.search);
+		if (filter) {
+			params.set('filter', filter);
+		} else {
+			params.delete('filter');
+		}
 
-		// let old = new URL(window.location.href);
-
-		// history.pushState({filterText}, "", `${old.pathname}?${search}`);
-		// history.replaceState({filterText}, "", `${old.pathname}?${search}`);
+		// Update the URL without reloading the page
+		replaceState(`${window.location.pathname}?${params.toString()}`, {});
 	}
 
 	$: projects = data.projects.filter((project) =>
-		project.name.toLowerCase().includes(filterText.toLowerCase())
+		project.name.toLowerCase().includes(filter.toLowerCase())
 	);
 	$: screens = data.screens.filter((screen) =>
-		screen.name.toLowerCase().includes(filterText.toLowerCase())
+		screen.name.toLowerCase().includes(filter.toLowerCase())
 	);
 
 	$: projectsFilterMsg =
-		filterText.length > 0
+		filter.length > 0
 			? `Showing ${projects.length} out of ${data.projects.length} Projects`
 			: `Projects (${projects.length})`;
 	$: screensFilterMsg =
-		filterText.length > 0
+		filter.length > 0
 			? `Showing ${screens.length} out of ${data.screens.length} Screens`
 			: `Screens (${screens.length})`;
 </script>
@@ -50,12 +57,8 @@
 </div>
 
 <div class="filter">
-	<input
-		bind:value={filterText}
-		on:input={(e) => setFilterText(e.target.value)}
-		placeholder="Filter by Name"
-	/>
-	<button on:click={() => (filterText = '')} title="Clear filter text">
+	<input bind:value={filter} on:input={updateFilter} placeholder="Filter by Name" />
+	<button on:click={clearFilter} title="Clear filter text">
 		<Fa icon={faXmark} color="#666" size="lg" />
 	</button>
 </div>
