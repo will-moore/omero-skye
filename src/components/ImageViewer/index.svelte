@@ -30,6 +30,19 @@
 	let panCentre = { x: 0.5, y: 0.5 };
 
 
+	function handleScrollEnd(event) {
+		// We want to calculate the image coordinates at the centre of the viewport
+		// we can use the imageWrapper since it will be same size as the image
+		let left = event.target.scrollLeft;
+		let top = event.target.scrollTop;
+		let wrapperWidth = Math.max(imgWidth, innerWidth);
+		let wrapperHeight = Math.max(imgHeight, innerHeight);
+		let fractionLeft = (left + (innerWidth / 2)) / wrapperWidth;
+		let fractionTop = (top + (innerHeight / 2)) / wrapperHeight;
+		// update the centre that we use to update scroll position on pinch (zoom)
+		panCentre = { x: fractionLeft, y: fractionTop };
+	}
+
 	function handlePinch(event) {
 		// don't zoom below 100%
 		zoom = Math.max(100, zoom * (event.detail?.ratio || 1));
@@ -151,6 +164,7 @@
 	use:scrollposition={imgWidth}
 	use:pinchAction
 	on:pinch={handlePinch}
+	on:scrollend={handleScrollEnd}
 	style:width="{innerWidth}px"
 	style:height="{innerHeight}px"
 >
