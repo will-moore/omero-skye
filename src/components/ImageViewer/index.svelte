@@ -25,10 +25,16 @@
 
 	$: theZ = imgData.rdefs.defaultZ;
 	$: theT = imgData.rdefs.defaultT;
-	$: renderQuery = `c=${imgData.channels.map(chMarshal).join(",")}&m=c&p=normal`;
+	$: renderQuery = `c=${imgData.channels.map(chMarshal).join(",")}&m=c&p=normal&ia=${imgData.rdefs.invertAxis?1:0}&maps=${chMaps(imgData)}`;
 
 	function chMarshal(ch, idx) {
 		return `${ch.active ? '' : '-'}${idx + 1}|${ch.window.start}:${ch.window.end}$${ch.color}`;
+	}
+	function chMaps(imgData) {
+		const maps_json = imgData.channels.map(ch => {
+			return {'inverted': {'enabled': ch.inverted}}
+		});
+		return JSON.stringify(maps_json).replace(/ /g, "");
 	}
 
 	// point on the image that is at centre of viewport
