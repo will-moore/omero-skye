@@ -1,5 +1,6 @@
 <script>
 	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
+	import {pinchAction} from '$lib/util';
 
 	// import { pinch, pan } from 'svelte-hammer'
 
@@ -9,13 +10,10 @@
 	let innerHeight = 0;
 
 	$: zoom = 100;
-	$: dx = 0;
-	$: dy = 0;
+
 	// reset zoom and pan when imgData changes (new Image)
 	$: if (imgData.id > 0) {
 		zoom = 100;
-		dx = 0;
-		dy = 0;
 	}
 
 	$: viewportRatio = innerWidth / innerHeight;
@@ -25,113 +23,47 @@
 	$: imgWidth = (zoom / 100) * (imgWiderThanViewport ? innerWidth : innerHeight * imageRatio);
 	$: imgHeight = (zoom / 100) * (imgWiderThanViewport ? innerWidth / imageRatio : innerHeight);
 
+	$: theZ = imgData.rdefs.defaultZ;
+	$: theT = imgData.rdefs.defaultT;
+	$: renderQuery = `c=${imgData.channels.map(chMarshal).join(",")}&m=c&p=normal&ia=${imgData.rdefs.invertAxis?1:0}&maps=${chMaps(imgData)}`;
+
+	function chMarshal(ch, idx) {
+		return `${ch.active ? '' : '-'}${idx + 1}|${ch.window.start}:${ch.window.end}$${ch.color}`;
+	}
+	function chMaps(imgData) {
+		const maps_json = imgData.channels.map(ch => {
+			return {'inverted': {'enabled': ch.inverted}}
+		});
+		return JSON.stringify(maps_json).replace(/ /g, "");
+	}
+
 	// point on the image that is at centre of viewport
-	// TODO: update this on pan!
+	// updated on pan!
 	let panCentre = { x: 0.5, y: 0.5 };
 
+
+	function handleScrollEnd(event) {
+		// We want to calculate the image coordinates at the centre of the viewport
+		// we can use the imageWrapper since it will be same size as the image
+		let left = event.target.scrollLeft;
+		let top = event.target.scrollTop;
+		let wrapperWidth = Math.max(imgWidth, innerWidth);
+		let wrapperHeight = Math.max(imgHeight, innerHeight);
+		let fractionLeft = (left + (innerWidth / 2)) / wrapperWidth;
+		let fractionTop = (top + (innerHeight / 2)) / wrapperHeight;
+		// update the centre that we use to update scroll position on pinch (zoom)
+		panCentre = { x: fractionLeft, y: fractionTop };
+	}
 
 	function handlePinch(event) {
 		// don't zoom below 100%
 		zoom = Math.max(100, zoom * (event.detail?.ratio || 1));
 	}
 
-	function pinchAction(el) {
-		// From https://mdn.github.io/dom-examples/pointerevents/Pinch_zoom_gestures.html
-
-		// Global vars to cache event state
-		var evCache = new Array();
-		var prevDiff = -1;
-
-		function pointerdown_handler(ev) {
-			// The pointerdown event signals the start of a touch interaction.
-			// This event is cached to support 2-finger gestures
-			evCache.push(ev);
-		}
-
-		function pointermove_handler(ev) {
-			ev.preventDefault();
-
-			// This function implements a 2-pointer horizontal Action/zoom gesture.
-			// Find this event in the cache and update its record with this event
-			for (var i = 0; i < evCache.length; i++) {
-				if (ev.pointerId == evCache[i].pointerId) {
-					evCache[i] = ev;
-					break;
-				}
-			}
-
-			// If two pointers are down, check for pinch gestures
-			if (evCache.length == 2) {
-				// Calculate the distance between the two pointers
-				var curDiff = Math.sqrt(
-					Math.pow(evCache[1].clientX - evCache[0].clientX, 2) +
-						Math.pow(evCache[1].clientY - evCache[0].clientY, 2)
-				);
-
-				if (prevDiff > 0) {
-					el.dispatchEvent(new CustomEvent('pinch', { detail: { ratio: curDiff / prevDiff } }));
-				}
-
-				// Cache the distance for the next move event
-				prevDiff = curDiff;
-			}
-			return false;
-		}
-
-		function pointerup_handler(ev) {
-			// Remove this pointer from the cache
-			remove_event(ev);
-			// If the number of pointers down is less than two then reset diff tracker
-			if (evCache.length < 2) prevDiff = -1;
-		}
-
-		function remove_event(ev) {
-			// Remove this event from the target's cache
-			for (var i = 0; i < evCache.length; i++) {
-				if (evCache[i].pointerId == ev.pointerId) {
-					evCache.splice(i, 1);
-					break;
-				}
-			}
-		}
-
-		// Install event handlers for the pointer target
-		el.onpointerdown = pointerdown_handler;
-		el.onpointermove = pointermove_handler;
-		// Use same handler for pointer{up,cancel,out,leave} events since
-		// the semantics for these events - in this app - are the same.
-		el.onpointerup = pointerup_handler;
-		el.onpointercancel = pointerup_handler;
-		el.onpointerout = pointerup_handler;
-		el.onpointerleave = pointerup_handler;
-
-		return {
-			update(opt) {},
-			destroy() {
-				// element destroyed, remove listeners
-				el.removeEventListener('pointerdown', pointerdown_handler);
-				el.removeEventListener('pointermove', pointermove_handler);
-				let evts = ['pointerup', 'pointercancel', 'pointerout', 'pointerleave'];
-				for (const evtName of evts) {
-					el.removeEventListener(evtName, pointerup_handler);
-				}
-			}
-		};
-	}
-
 	function scrollposition(node, init_w) {
-		// the update() method returned from the scrollposition() action will be called whenever
-		// the node element changes, immediately after Svelte has applied updates to the markup
-		// https://svelte.dev/docs/element-directives#use-action
-
-		// Used for the main viewer (only when the page loads, not needed subsequently)
-		// and also for thumbnails slider when selection changes -> scrolls selected to centre
+		// node change on zoom triggers this action, which updates scrollPosition
+		// to keep the panCentre the same as it was before the zoom
 		const update = (img_w) => {
-			// console.log('scrollposition', node, img_w);
-			// const item = node.querySelector('.selected');
-			// if (item) item.scrollIntoView({ inline: 'center' });
-
-			// let's just centre the image for now...
 			// NB: scrollX and scrollY may be negative and therefore ignored
 			const scrollX = panCentre.x * imgWidth - innerWidth * 0.5;
 			const scrollY = panCentre.y * imgHeight - innerHeight * 0.5;
@@ -151,6 +83,7 @@
 	use:scrollposition={imgWidth}
 	use:pinchAction
 	on:pinch={handlePinch}
+	on:scrollend={handleScrollEnd}
 	style:width="{innerWidth}px"
 	style:height="{innerHeight}px"
 >
@@ -166,7 +99,7 @@
 			style:width="{imgWidth}px"
 			style:height="{imgHeight}px"
 			alt="Thumbnail of {imgData.meta.Name}"
-			src="{BASE_URL}/webclient/render_image/{imgData.id}/"
+			src="{BASE_URL}/webclient/render_image/{imgData.id}/{theZ}/{theT}/?{renderQuery}"
 		/>
 	</div>
 </div>
