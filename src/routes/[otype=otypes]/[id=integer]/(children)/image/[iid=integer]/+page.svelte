@@ -7,7 +7,7 @@
 </script>
 
 <svelte:head>
-	<title>OMERO {data.imgData.meta.name}</title>
+	<title>OMERO {data.imgData.meta.imageName}</title>
 	<meta name="description" content="Showing data from OMERO, {data.otype}: {data.obj.Name}" />
 </svelte:head>
 
