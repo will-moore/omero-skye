@@ -105,33 +105,23 @@
 			style:height="{imgHeight}px"
 			alt="Thumbnail of {imgData.meta.Name}"
 			src="{BASE_URL}/webclient/render_image/{imgData.id}/{theZ}/{theT}/?{renderQuery}"
+			style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{imgData.id}/')"
 		/>
 	</div>
 	{#if zoom == 100}
-		<div style:height="{innerHeight * 0.7}px" style:background="yellow">
-			<h3>Annotations</h3>
+		<div class="info" style:height="{innerHeight * 0.7}px">
+			<h1>{imgData.meta.imageName}</h1>
+			<h2>Image: {imgData.id}</h2>
+			<table>
+				<tbody>
+					<tr><td>Size X/Y:</td><td>{imgData.size.width} x {imgData.size.height}</td></tr>
+					<tr><td>Size Z/Time:</td><td>{imgData.size.z} x {imgData.size.t}</td></tr>
+					<tr><td>Pixels Type</td><td>{imgData.meta.pixelsType}</td></tr>
+				</tbody>
+			</table>
 		</div>
 	{/if}
 </div>
-
-<aside>
-	<details>
-		<summary> Info {imgData.id} </summary>
-		<h1>{imgData.meta.imageName}</h1>
-		<h2>Image: {imgData.id}</h2>
-
-		<a href="/image/{imgData.id}/annotations">Annotations</a> |
-		<a href="{BASE_URL}/webclient/img_detail/{imgData.id}/">Open in iviewer</a>
-
-		<table>
-			<tbody>
-				<tr><td>Size X/Y:</td><td>{imgData.size.width} x {imgData.size.height}</td></tr>
-				<tr><td>Size Z/Time:</td><td>{imgData.size.z} x {imgData.size.t}</td></tr>
-				<tr><td>Pixels Type</td><td>{imgData.meta.pixelsType}</td></tr>
-			</tbody>
-		</table>
-	</details>
-</aside>
 
 <style>
 	@keyframes shrink-image {
@@ -145,6 +135,14 @@
 			left: var(--shrinkLeft);
 		}
 	}
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
 
 	.imageWrapper img {
 		animation: shrink-image linear forwards;
@@ -152,6 +150,9 @@
 
 		position: absolute;
 		bottom: 0;
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center;
 	}
 
 	.imageWrapper {
@@ -163,18 +164,21 @@
 		width: 100%;
 		height: 100%;
 		overflow: auto;
+		background: lightgrey;
 	}
 
 	img {
 		view-transition-name: var(--viewtransitionkey);
 	}
 
-	aside {
-		position: absolute;
-		top: 10px;
-		right: 10px;
-		max-width: calc(100% - 20px);
+	.info {
 		background-color: white;
-		padding: 10px;
+		padding: 15px;
+		border-radius: 20px 20px 0 0;
+		border: transparent;
+	}
+	.info table {
+		animation: fade-in linear forwards;
+		animation-timeline: scroll();
 	}
 </style>

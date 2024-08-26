@@ -1,6 +1,9 @@
 <script>
-	import Carousel from '../../../../../../components/Carousel.svelte';
+	import Fa from 'svelte-fa';
+	import { faTags, faAngleLeft} from '@fortawesome/free-solid-svg-icons';
 
+	import Carousel from '../../../../../../components/Carousel.svelte';
+	
 	export let data;
 
 	$: iids = data.children.map((ch) => ch.id);
@@ -20,7 +23,9 @@
 
 
 <div class="back">
-	<a href="/{data.otype}/{data.obj['@id']}">Back to Dataset</a>
+	<a href="/{data.otype}/{data.obj['@id']}">
+		<Fa icon={faAngleLeft} color="#999" size="lg" />
+	</a>
 </div>
 
 <style>
@@ -30,5 +35,6 @@
 		top: 10px;
 		background-color: white;
 		padding: 10px;
+		border-radius: 5px;
 	}
 </style>
