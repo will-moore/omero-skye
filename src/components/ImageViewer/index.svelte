@@ -1,6 +1,6 @@
 <script>
 	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
-	import {pinchAction} from '$lib/util';
+	import { pinchAction } from '$lib/util';
 
 	// import { pinch, pan } from 'svelte-hammer'
 
@@ -25,22 +25,21 @@
 
 	$: theZ = imgData.rdefs.defaultZ;
 	$: theT = imgData.rdefs.defaultT;
-	$: renderQuery = `c=${imgData.channels.map(chMarshal).join(",")}&m=c&p=normal&ia=${imgData.rdefs.invertAxis?1:0}&maps=${chMaps(imgData)}`;
+	$: renderQuery = `c=${imgData.channels.map(chMarshal).join(',')}&m=c&p=normal&ia=${imgData.rdefs.invertAxis ? 1 : 0}&maps=${chMaps(imgData)}`;
 
 	function chMarshal(ch, idx) {
 		return `${ch.active ? '' : '-'}${idx + 1}|${ch.window.start}:${ch.window.end}$${ch.color}`;
 	}
 	function chMaps(imgData) {
-		const maps_json = imgData.channels.map(ch => {
-			return {'inverted': {'enabled': ch.inverted}}
+		const maps_json = imgData.channels.map((ch) => {
+			return { inverted: { enabled: ch.inverted } };
 		});
-		return JSON.stringify(maps_json).replace(/ /g, "");
+		return JSON.stringify(maps_json).replace(/ /g, '');
 	}
 
 	// point on the image that is at centre of viewport
 	// updated on pan!
 	let panCentre = { x: 0.5, y: 0.5 };
-
 
 	function handleScrollEnd(event) {
 		// We want to calculate the image coordinates at the centre of the viewport
@@ -49,8 +48,8 @@
 		let top = event.target.scrollTop;
 		let wrapperWidth = Math.max(imgWidth, innerWidth);
 		let wrapperHeight = Math.max(imgHeight, innerHeight);
-		let fractionLeft = (left + (innerWidth / 2)) / wrapperWidth;
-		let fractionTop = (top + (innerHeight / 2)) / wrapperHeight;
+		let fractionLeft = (left + innerWidth / 2) / wrapperWidth;
+		let fractionTop = (top + innerHeight / 2) / wrapperHeight;
 		// update the centre that we use to update scroll position on pinch (zoom)
 		panCentre = { x: fractionLeft, y: fractionTop };
 	}
@@ -73,10 +72,21 @@
 
 		return { update };
 	}
+
+	// add keyboard event listener for Left and Right arrow keys
+	const handleKeydown = (evt) => {
+		console.log('keydown', evt.key, zoom, zoom * 0.8, Math.max(100, zoom * 0.8));
+		if (evt.key === 'ArrowUp') {
+			zoom = zoom * 1.2;
+		} else if (evt.key === 'ArrowDown') {
+			zoom = Math.max(100, zoom * 0.8);
+		}
+		console.log("zoom...", zoom)
+	};
 </script>
 
 <!-- TODO: bind to viewport element instead of window? -->
-<svelte:window bind:innerWidth bind:innerHeight />
+<svelte:window bind:innerWidth bind:innerHeight on:keydown|preventDefault={handleKeydown} />
 
 <div
 	class="viewport"
@@ -96,15 +106,15 @@
 		style:height="{Math.max(imgHeight, innerHeight)}px"
 	>
 		<img
-			class:scroll_shrink={zoom==100}
+			class:scroll_shrink={zoom == 100}
 			style:--viewtransitionkey="image-{imgData.id}"
 			style:--shrinkHeight="{imgHeight * 0.5}px"
 			style:--shrinkWidth="{imgWidth * 0.5}px"
-			style:--shrinkLeft="{(innerWidth - (imgWidth * 0.5)) / 2}px"
+			style:--shrinkLeft="{(innerWidth - imgWidth * 0.5) / 2}px"
 			style:bottom="{(Math.max(imgHeight, innerHeight) - imgHeight) / 2}px"
 			style:width="{imgWidth}px"
 			style:height="{imgHeight}px"
-			style:left="{(innerWidth - imgWidth) / 2}px"
+			style:left="{(Math.max(imgWidth, innerWidth) - imgWidth) / 2}px"
 			alt="Thumbnail of {imgData.meta.Name}"
 			src="{BASE_URL}/webclient/render_image/{imgData.id}/{theZ}/{theT}/?{renderQuery}"
 			style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{imgData.id}/')"
@@ -128,7 +138,6 @@
 <style>
 	@keyframes shrink-image {
 		from {
-
 		}
 		to {
 			bottom: 0;
@@ -163,6 +172,7 @@
 	.imageWrapper {
 		position: relative;
 		background-color: transparent;
+		scroll-snap-align: end;
 	}
 	.viewport {
 		position: relative;
@@ -170,6 +180,7 @@
 		height: 100%;
 		overflow: auto;
 		background: lightgrey;
+		scroll-snap-type: y mandatory
 	}
 
 	img {
@@ -181,6 +192,7 @@
 		padding: 15px;
 		border-radius: 20px 20px 0 0;
 		border: transparent;
+		scroll-snap-align: end;
 	}
 	.info table {
 		animation: fade-in linear forwards;
