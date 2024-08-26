@@ -96,6 +96,7 @@
 		style:height="{Math.max(imgHeight, innerHeight)}px"
 	>
 		<img
+			class:scroll_shrink={zoom==100}
 			style:--viewtransitionkey="image-{imgData.id}"
 			style:--shrinkHeight="{imgHeight * 0.5}px"
 			style:--shrinkWidth="{imgWidth * 0.5}px"
@@ -103,6 +104,7 @@
 			style:bottom="{(Math.max(imgHeight, innerHeight) - imgHeight) / 2}px"
 			style:width="{imgWidth}px"
 			style:height="{imgHeight}px"
+			style:left="{(innerWidth - imgWidth) / 2}px"
 			alt="Thumbnail of {imgData.meta.Name}"
 			src="{BASE_URL}/webclient/render_image/{imgData.id}/{theZ}/{theT}/?{renderQuery}"
 			style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{imgData.id}/')"
@@ -126,7 +128,7 @@
 <style>
 	@keyframes shrink-image {
 		from {
-			left: 0;
+
 		}
 		to {
 			bottom: 0;
@@ -145,14 +147,17 @@
 	}
 
 	.imageWrapper img {
-		animation: shrink-image linear forwards;
-		animation-timeline: scroll();
-
 		position: absolute;
-		bottom: 0;
+
+		/* background image thumbnail placeholder */
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
+	}
+
+	img.scroll_shrink {
+		animation: shrink-image linear forwards;
+		animation-timeline: scroll();
 	}
 
 	.imageWrapper {
