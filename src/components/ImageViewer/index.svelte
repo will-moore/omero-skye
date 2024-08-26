@@ -91,17 +91,27 @@
 	the centre of the viewport when zoomed out -->
 	<div
 		class="imageWrapper"
+		style:background="lightgrey"
 		style:width="{Math.max(imgWidth, innerWidth)}px"
 		style:height="{Math.max(imgHeight, innerHeight)}px"
 	>
 		<img
 			style:--viewtransitionkey="image-{imgData.id}"
+			style:--shrinkHeight="{imgHeight * 0.5}px"
+			style:--shrinkWidth="{imgWidth * 0.5}px"
+			style:--shrinkLeft="{(innerWidth - (imgWidth * 0.5)) / 2}px"
+			style:bottom="{(Math.max(imgHeight, innerHeight) - imgHeight) / 2}px"
 			style:width="{imgWidth}px"
 			style:height="{imgHeight}px"
 			alt="Thumbnail of {imgData.meta.Name}"
 			src="{BASE_URL}/webclient/render_image/{imgData.id}/{theZ}/{theT}/?{renderQuery}"
 		/>
 	</div>
+	{#if zoom == 100}
+		<div style:height="{innerHeight * 0.7}px" style:background="yellow">
+			<h3>Annotations</h3>
+		</div>
+	{/if}
 </div>
 
 <aside>
@@ -124,10 +134,28 @@
 </aside>
 
 <style>
+	@keyframes shrink-image {
+		from {
+			left: 0;
+		}
+		to {
+			bottom: 0;
+			width: var(--shrinkWidth);
+			height: var(--shrinkHeight);
+			left: var(--shrinkLeft);
+		}
+	}
+
+	.imageWrapper img {
+		animation: shrink-image linear forwards;
+		animation-timeline: scroll();
+
+		position: absolute;
+		bottom: 0;
+	}
+
 	.imageWrapper {
-		display: flex;
-		justify-content: center;
-		align-items: center;
+		position: relative;
 		background-color: transparent;
 	}
 	.viewport {
