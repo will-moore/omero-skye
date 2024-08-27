@@ -120,3 +120,12 @@ export function pinchAction(el) {
         }
     };
 }
+
+export function getChannelLabels(channels) {
+    return channels.map((ch, idx) => ch.label || idx + "");
+}
+
+export function formatPixelSizes(pixel_sizes) {
+    return ["x", "y", "z"].map((dim) => pixel_sizes[dim])
+    .filter(Boolean).map(num => num.toPrecision(3)).join(", ")
+}

@@ -1,6 +1,6 @@
 <script>
 	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
-	import { pinchAction } from '$lib/util';
+	import { pinchAction, formatDate, getChannelLabels, formatPixelSizes } from '$lib/util';
 
 	// import { pinch, pan } from 'svelte-hammer'
 
@@ -124,11 +124,17 @@
 		<div class="info" style:height="{innerHeight * 0.7}px">
 			<h1>{imgData.meta.imageName}</h1>
 			<h2>Image: {imgData.id}</h2>
-			<table>
+			<p class="marginBorder">
+				Imported: <strong> {formatDate(imgData.meta.imageTimestamp * 1000)}</strong></p>
+			<p>Owner: <strong>{imgData.meta.imageAuthor}</strong></p>
+
+			<table style="min-width: 400px;" class="marginBorder">
 				<tbody>
 					<tr><td>Size X/Y:</td><td>{imgData.size.width} x {imgData.size.height}</td></tr>
 					<tr><td>Size Z/Time:</td><td>{imgData.size.z} x {imgData.size.t}</td></tr>
 					<tr><td>Pixels Type</td><td>{imgData.meta.pixelsType}</td></tr>
+					<tr><td>Channels</td><td>{getChannelLabels(imgData.channels).join(", ")}</td></tr>
+					<tr><td>Pixel Sizes</td><td>{formatPixelSizes(imgData.pixel_size)}</td></tr>
 				</tbody>
 			</table>
 		</div>
@@ -197,5 +203,11 @@
 	.info table {
 		animation: fade-in linear forwards;
 		animation-timeline: scroll();
+	}
+
+	.marginBorder {
+		margin-top: 15px;
+		padding-top:10px;
+		border-top: solid lightgrey 1px;
 	}
 </style>
