@@ -6,6 +6,7 @@
 	// import { pinch, pan } from 'svelte-hammer'
 
 	export let imgData;
+	export let baseUrl;
 
 	let innerWidth = 0;
 	let innerHeight = 0;
@@ -123,7 +124,7 @@
 	</div>
 	{#if zoom == 100}
 		<div class="info" style:height="{innerHeight * 0.7}px">
-			<ImgdataInfo {imgData}/>
+			<ImgdataInfo {imgData} {baseUrl}/>
 		</div>
 	{/if}
 </div>
@@ -186,5 +187,6 @@
 		border-radius: 20px 20px 0 0;
 		border: transparent;
 		scroll-snap-align: end;
+		overflow: auto;
 	}
 </style>

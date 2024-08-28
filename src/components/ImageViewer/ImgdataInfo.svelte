@@ -1,10 +1,17 @@
 <script>
+    import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
 	import { formatDate, getChannelLabels, formatPixelSizes } from '$lib/util';
 	export let imgData;
+    export let baseUrl;
 </script>
 
 <h2>{imgData.meta.imageName}</h2>
 <h3>Image: {imgData.id}</h3>
+
+<p>
+    <a href="{baseUrl}{imgData.id}/annotations">Annotations</a>
+    <a href="{BASE_URL}/webclient/img_detail/{imgData.id}/">Open in iviewer</a>
+</p>
 <p class="marginBorder">
 	Imported: <strong> {formatDate(imgData.meta.imageTimestamp * 1000)}</strong><br />
 	Owner: <strong>{imgData.meta.imageAuthor}</strong>

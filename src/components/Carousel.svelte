@@ -102,7 +102,7 @@
 				style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{iid}/')"
 			>
 				{#if imgDataByIds[iid]}
-					<ImageViewer imgData={imgDataByIds[iid]} />
+					<ImageViewer imgData={imgDataByIds[iid]} {baseUrl}/>
 				{/if}
 			</div>
 		{/each}
