@@ -1,6 +1,7 @@
 <script>
 	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
-	import { pinchAction, formatDate, getChannelLabels, formatPixelSizes } from '$lib/util';
+	import { pinchAction } from '$lib/util';
+	import ImgdataInfo from './ImgdataInfo.svelte';
 
 	// import { pinch, pan } from 'svelte-hammer'
 
@@ -122,22 +123,7 @@
 	</div>
 	{#if zoom == 100}
 		<div class="info" style:height="{innerHeight * 0.7}px">
-			<h1>{imgData.meta.imageName}</h1>
-			<h2>Image: {imgData.id}</h2>
-			<p class="marginBorder">
-				Imported: <strong> {formatDate(imgData.meta.imageTimestamp * 1000)}</strong><br>
-				Owner: <strong>{imgData.meta.imageAuthor}</strong>
-			</p>
-
-			<table>
-				<tbody>
-					<tr><td>Size X/Y:</td><td>{imgData.size.width} x {imgData.size.height}</td></tr>
-					<tr><td>Size Z/Time:</td><td>{imgData.size.z} x {imgData.size.t}</td></tr>
-					<tr><td>Pixels Type</td><td>{imgData.meta.pixelsType}</td></tr>
-					<tr><td>Channels</td><td>{getChannelLabels(imgData.channels).join(", ")}</td></tr>
-					<tr><td>Pixel Sizes</td><td>{formatPixelSizes(imgData.pixel_size)}</td></tr>
-				</tbody>
-			</table>
+			<ImgdataInfo {imgData}/>
 		</div>
 	{/if}
 </div>
@@ -200,16 +186,5 @@
 		border-radius: 20px 20px 0 0;
 		border: transparent;
 		scroll-snap-align: end;
-	}
-	.info table {
-		animation: fade-in linear forwards;
-		animation-timeline: scroll();
-	}
-
-	.marginBorder {
-		margin: 15px 0;
-		padding: 10px 0;
-		border-top: solid lightgrey 1px;
-		border-bottom: solid lightgrey 1px;
 	}
 </style>
