@@ -125,10 +125,11 @@
 			<h1>{imgData.meta.imageName}</h1>
 			<h2>Image: {imgData.id}</h2>
 			<p class="marginBorder">
-				Imported: <strong> {formatDate(imgData.meta.imageTimestamp * 1000)}</strong></p>
-			<p>Owner: <strong>{imgData.meta.imageAuthor}</strong></p>
+				Imported: <strong> {formatDate(imgData.meta.imageTimestamp * 1000)}</strong><br>
+				Owner: <strong>{imgData.meta.imageAuthor}</strong>
+			</p>
 
-			<table style="min-width: 400px;" class="marginBorder">
+			<table>
 				<tbody>
 					<tr><td>Size X/Y:</td><td>{imgData.size.width} x {imgData.size.height}</td></tr>
 					<tr><td>Size Z/Time:</td><td>{imgData.size.z} x {imgData.size.t}</td></tr>
@@ -206,8 +207,9 @@
 	}
 
 	.marginBorder {
-		margin-top: 15px;
-		padding-top:10px;
+		margin: 15px 0;
+		padding: 10px 0;
 		border-top: solid lightgrey 1px;
+		border-bottom: solid lightgrey 1px;
 	}
 </style>
