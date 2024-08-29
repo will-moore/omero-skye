@@ -1,13 +1,12 @@
 <script>
 	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
-	import { pinchAction } from '$lib/util';
+	import { pinchAction, chMarshal, chMaps } from '$lib/util';
 	import ImgdataInfo from './ImgdataInfo.svelte';
-
-	// import { pinch, pan } from 'svelte-hammer'
 
 	export let imgData;
 	export let baseUrl;
 
+	// page width/height - updated on e.g. phone rotation or resize
 	let innerWidth = 0;
 	let innerHeight = 0;
 
@@ -18,6 +17,8 @@
 		zoom = 100;
 	}
 
+	// If zoom is 100%, we fit the Image to Viewport.
+	// When zoom increases, recalculate img Width/Height.
 	$: viewportRatio = innerWidth / innerHeight;
 	let imageRatio = imgData.size.width / imgData.size.height;
 	$: imgWiderThanViewport = imageRatio > viewportRatio;
@@ -29,18 +30,7 @@
 	$: theT = imgData.rdefs.defaultT;
 	$: renderQuery = `c=${imgData.channels.map(chMarshal).join(',')}&m=c&p=normal&ia=${imgData.rdefs.invertAxis ? 1 : 0}&maps=${chMaps(imgData)}`;
 
-	function chMarshal(ch, idx) {
-		return `${ch.active ? '' : '-'}${idx + 1}|${ch.window.start}:${ch.window.end}$${ch.color}`;
-	}
-	function chMaps(imgData) {
-		const maps_json = imgData.channels.map((ch) => {
-			return { inverted: { enabled: ch.inverted } };
-		});
-		return JSON.stringify(maps_json).replace(/ /g, '');
-	}
-
-	// point on the image that is at centre of viewport
-	// updated on pan!
+	// point on the image that is at centre of viewport - updated on pan!
 	let panCentre = { x: 0.5, y: 0.5 };
 
 	function handleScrollEnd(event) {
@@ -71,19 +61,16 @@
 			node.scroll(scrollX, scrollY);
 		};
 		update();
-
 		return { update };
 	}
 
-	// add keyboard event listener for Left and Right arrow keys
+	// add keyboard event listener for Up and Down keys to Zoom (mostly for testing)
 	const handleKeydown = (evt) => {
-		console.log('keydown', evt.key, zoom, zoom * 0.8, Math.max(100, zoom * 0.8));
 		if (evt.key === 'ArrowUp') {
 			zoom = zoom * 1.2;
 		} else if (evt.key === 'ArrowDown') {
 			zoom = Math.max(100, zoom * 0.8);
 		}
-		console.log("zoom...", zoom)
 	};
 </script>
 
@@ -91,7 +78,7 @@
 <svelte:window bind:innerWidth bind:innerHeight on:keydown|preventDefault={handleKeydown} />
 
 <div
-	class="viewport"
+	class="viewport scrollbar-hidden"
 	use:scrollposition={imgWidth}
 	use:pinchAction
 	on:pinch={handlePinch}
@@ -188,5 +175,17 @@
 		border: transparent;
 		scroll-snap-align: end;
 		overflow: auto;
+	}
+
+
+	/* Hide scrollbar for Chrome, Safari and Opera */
+	.scrollbar-hidden::-webkit-scrollbar {
+		display: none;
+	}
+
+	/* Hide scrollbar for IE, Edge add Firefox */
+	.scrollbar-hidden {
+		-ms-overflow-style: none;
+		scrollbar-width: none; /* Firefox */
 	}
 </style>

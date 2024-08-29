@@ -38,7 +38,7 @@
 		if (evt.target.scrollLeft == 0) {
 			// prev
 			navigateToImage(imageIds[imgIndex - 1]);
-		} else if (evt.target.scrollLeft > (evt.target.clientWidth * 2)) {
+		} else if (evt.target.scrollLeft > evt.target.clientWidth * 2) {
 			// next
 			navigateToImage(imageIds[imgIndex + 1]);
 		} else if (imgIndex == 0 && evt.target.scrollLeft > 0) {
@@ -59,7 +59,7 @@
 	}
 
 	async function cachePrevNextImgData() {
-		if ((imgIndex + 1) < imageIds.length) {
+		if (imgIndex + 1 < imageIds.length) {
 			loadImgData(imageIds[imgIndex + 1]);
 		}
 		if (imgIndex > 0) {
@@ -75,8 +75,8 @@
 		cachePrevNextImgData();
 	}
 
-	function focus(node) {
-		// the update() method returned from the focus() action will be called whenever
+	function scrollSelectedIntoView(node) {
+		// the update() method returned from the scrollSelectedIntoView() action will be called whenever
 		// the node element changes, immediately after Svelte has applied updates to the markup
 		// https://svelte.dev/docs/element-directives#use-action
 
@@ -87,13 +87,20 @@
 			if (item) item.scrollIntoView({ inline: 'center' });
 		};
 		update();
-
 		return { update };
 	}
 </script>
 
 <div class="imgviewer">
-	<div class="container" use:focus={imgIndex} on:scrollend={handleScrollEnd}>
+	<!--
+		We show 3 Image Viewers (prev, imgIndex, next) in a slider with scroll-snap.
+		On scrollend, if prev or next are chosen, we update imgIndex etc.
+	-->
+	<div
+		class="container scrollbar-hidden"
+		use:scrollSelectedIntoView={imgIndex}
+		on:scrollend={handleScrollEnd}
+	>
 		{#each imageIds.slice(Math.max(imgIndex - 1, 0), imgIndex + 2) as iid, key (iid)}
 			<div
 				class="viewer"
@@ -102,7 +109,7 @@
 				style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{iid}/')"
 			>
 				{#if imgDataByIds[iid]}
-					<ImageViewer imgData={imgDataByIds[iid]} {baseUrl}/>
+					<ImageViewer imgData={imgDataByIds[iid]} {baseUrl} />
 				{/if}
 			</div>
 		{/each}
@@ -142,7 +149,7 @@
 		flex-direction: row;
 		overflow-x: scroll;
 		scroll-snap-type: x mandatory;
-		gap: 10px;
+		gap: 20px;
 	}
 	.viewer {
 		background-size: contain;
@@ -151,6 +158,16 @@
 		flex: 0 0 100%;
 		scroll-snap-align: center;
 		position: relative;
+	}
+	/* Hide scrollbar for Chrome, Safari and Opera */
+	.scrollbar-hidden::-webkit-scrollbar {
+		display: none;
+	}
+
+	/* Hide scrollbar for IE, Edge add Firefox */
+	.scrollbar-hidden {
+		-ms-overflow-style: none;
+		scrollbar-width: none; /* Firefox */
 	}
 
 	.thumbnails {

@@ -199,3 +199,14 @@ export function marshalAnnotations(data) {
     });
     return annsByType;
 }
+
+// functions for rendering imgData channels into query string
+export function chMarshal(ch, idx) {
+    return `${ch.active ? '' : '-'}${idx + 1}|${ch.window.start}:${ch.window.end}$${ch.color}`;
+}
+export function chMaps(imgData) {
+    const maps_json = imgData.channels.map((ch) => {
+        return { inverted: { enabled: ch.inverted } };
+    });
+    return JSON.stringify(maps_json).replace(/ /g, '');
+}
