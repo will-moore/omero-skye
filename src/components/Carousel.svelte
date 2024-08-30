@@ -116,7 +116,7 @@
 	</div>
 </div>
 
-<div class="thumbnails" use:focus={imgIndex} style:bottom={showThumbnails ? 0 : '-60px'}>
+<div class="thumbnails" use:scrollSelectedIntoView={imgIndex} style:bottom={showThumbnails ? 0 : '-60px'}>
 	{#each imageIds as iid (iid)}
 		<a href="{baseUrl}{iid}" data-sveltekit-replacestate>
 			<img
