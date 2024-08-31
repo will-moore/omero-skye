@@ -104,7 +104,7 @@
 		{#each imageIds.slice(Math.max(imgIndex - 1, 0), imgIndex + 2) as iid, key (iid)}
 			<div
 				class="viewer"
-				on:click={() => (showThumbnails = !showThumbnails)}
+				on:click|self={() => (showThumbnails = !showThumbnails)}
 				class:selected={iid === imageIds[imgIndex]}
 				style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{iid}/')"
 			>

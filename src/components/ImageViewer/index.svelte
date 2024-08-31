@@ -2,9 +2,14 @@
 	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
 	import { pinchAction, chMarshal, chMaps } from '$lib/util';
 	import ImgdataInfo from './ImgdataInfo.svelte';
+	import {RenderingSettings} from '$lib/imgDataStore';
+	import RenderControls from './RenderControls.svelte';
 
 	export let imgData;
 	export let baseUrl;
+
+	let renderSettings = new RenderingSettings(imgData);
+	let renderQuery = renderSettings.getQueryString();
 
 	// page width/height - updated on e.g. phone rotation or resize
 	let innerWidth = 0;
@@ -28,7 +33,11 @@
 
 	$: theZ = imgData.rdefs.defaultZ;
 	$: theT = imgData.rdefs.defaultT;
-	$: renderQuery = `c=${imgData.channels.map(chMarshal).join(',')}&m=c&p=normal&ia=${imgData.rdefs.invertAxis ? 1 : 0}&maps=${chMaps(imgData)}`;
+
+	renderSettings.subscribe(imgData => {
+		renderQuery = renderSettings.getQueryString();
+	})
+	// renderQuery = `c=${imgData.channels.map(chMarshal).join(',')}&m=c&p=normal&ia=${imgData.rdefs.invertAxis ? 1 : 0}&maps=${chMaps(imgData)}`;
 
 	// point on the image that is at centre of viewport - updated on pan!
 	let panCentre = { x: 0.5, y: 0.5 };
@@ -114,6 +123,8 @@
 			<ImgdataInfo {imgData} {baseUrl}/>
 		</div>
 	{/if}
+
+	<RenderControls {renderSettings} />
 </div>
 
 <style>
