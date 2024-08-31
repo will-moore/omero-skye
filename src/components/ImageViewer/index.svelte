@@ -7,6 +7,7 @@
 
 	export let imgData;
 	export let baseUrl;
+	export let showRenderControls;
 
 	let renderSettings = new RenderingSettings(imgData);
 	let renderQuery = renderSettings.getQueryString();
@@ -94,16 +95,19 @@
 	on:scrollend={handleScrollEnd}
 	style:width="{innerWidth}px"
 	style:height="{innerHeight}px"
+	style:--bg={showRenderControls ? "black" : "lightgrey"}
 >
 	<!-- ImageWrapper gives the image margin top/bottom so that it is in
 	the centre of the viewport when zoomed out -->
 	<div
 		class="imageWrapper"
-		style:background="lightgrey"
 		style:width="{Math.max(imgWidth, innerWidth)}px"
 		style:height="{Math.max(imgHeight, innerHeight)}px"
 	>
+		<!-- image class used to determine target of click
+			TODO: improve decoupling -->
 		<img
+			class="image"
 			class:scroll_shrink={zoom == 100}
 			style:--viewtransitionkey="image-{imgData.id}"
 			style:--shrinkHeight="{imgHeight * 0.5}px"
@@ -124,7 +128,7 @@
 		</div>
 	{/if}
 
-	<RenderControls {renderSettings} />
+	<RenderControls {renderSettings} {showRenderControls} />
 </div>
 
 <style>
@@ -163,15 +167,17 @@
 
 	.imageWrapper {
 		position: relative;
-		background-color: transparent;
 		scroll-snap-align: end;
+		background-color: var(--bg);
+		transition: background-color 0.3s ease-in-out;
 	}
 	.viewport {
 		position: relative;
 		width: 100%;
 		height: 100%;
 		overflow: auto;
-		background: lightgrey;
+		background-color: var(--bg);
+		transition: background-color 0.3s ease-in-out;
 		scroll-snap-type: y mandatory
 	}
 
