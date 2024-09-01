@@ -1,6 +1,6 @@
 <script>
 	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
-	import { pinchAction, chMarshal, chMaps } from '$lib/util';
+	import { pinchAction } from '$lib/util';
 	import ImgdataInfo from './ImgdataInfo.svelte';
 	import {RenderingSettings} from '$lib/imgDataStore';
 	import RenderControls from './RenderControls.svelte';
@@ -38,7 +38,6 @@
 	renderSettings.subscribe(imgData => {
 		renderQuery = renderSettings.getQueryString();
 	})
-	// renderQuery = `c=${imgData.channels.map(chMarshal).join(',')}&m=c&p=normal&ia=${imgData.rdefs.invertAxis ? 1 : 0}&maps=${chMaps(imgData)}`;
 
 	// point on the image that is at centre of viewport - updated on pan!
 	let panCentre = { x: 0.5, y: 0.5 };

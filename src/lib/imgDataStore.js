@@ -13,6 +13,10 @@ export class RenderingSettings {
         });
     }
 
+    getChannels() {
+        return get(this.store).channels;
+    }
+
     getQueryString() {
         const imgData = get(this.store);
         // using /figure/render_scaled_region/ endpoint and we want full size image
