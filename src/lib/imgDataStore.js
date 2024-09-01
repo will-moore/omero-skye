@@ -15,7 +15,9 @@ export class RenderingSettings {
 
     getQueryString() {
         const imgData = get(this.store);
-        return `c=${imgData.channels.map(chMarshal).join(',')}&m=c&p=normal&ia=${imgData.rdefs.invertAxis ? 1 : 0}&maps=${chMaps(imgData)}`;
+        // using /figure/render_scaled_region/ endpoint and we want full size image
+        let region = `region=0,0,${imgData.size.width},${imgData.size.height}`;
+        return `c=${imgData.channels.map(chMarshal).join(',')}&m=c&p=normal&ia=${imgData.rdefs.invertAxis ? 1 : 0}&maps=${chMaps(imgData)}&${region}`;
     
     }
 

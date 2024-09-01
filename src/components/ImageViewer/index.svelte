@@ -118,7 +118,7 @@
 			style:height="{imgHeight}px"
 			style:left="{(Math.max(imgWidth, innerWidth) - imgWidth) / 2}px"
 			alt="Thumbnail of {imgData.meta.Name}"
-			src="{BASE_URL}/webclient/render_image/{imgData.id}/{theZ}/{theT}/?{renderQuery}"
+			src="{BASE_URL}/figure/render_scaled_region/{imgData.id}/{theZ}/{theT}/?{renderQuery}"
 			style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{imgData.id}/')"
 		/>
 	</div>
