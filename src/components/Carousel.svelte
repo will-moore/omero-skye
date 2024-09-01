@@ -36,8 +36,7 @@
 
 	function toggleRenderControls(event) {
 		// ignore event unless it's a click on the img.image
-		if (event.target.tagName !== 'IMG') return;
-		if (!event.target.classList.contains('image')) return;
+		if (!(event.target.classList.contains('image') || event.target.classList.contains('imageWrapper'))) return;
 		showRenderControls = !showRenderControls;
 	}
 
@@ -105,7 +104,7 @@
 	-->
 	<div
 		class="container scrollbar-hidden"
-		style:--bg={showRenderControls ? "black" : "lightgrey"}
+		style:--bg={showRenderControls ? "#222" : "lightgrey"}
 		use:scrollSelectedIntoView={imgIndex}
 		on:scrollend={handleScrollEnd}
 	>

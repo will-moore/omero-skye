@@ -6,7 +6,7 @@
 	
 	export let data;
 
-	let showRenderControls = true;
+	let showRenderControls = false;
 
 	$: iids = data.children.map((ch) => ch.id);
 </script>
