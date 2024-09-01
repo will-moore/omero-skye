@@ -4,6 +4,12 @@
 	export let renderSettings;
 	export let showRenderControls;
 
+    let channels = renderSettings.getChannels();
+
+    renderSettings.subscribe(() => {
+        channels = renderSettings.getChannels();
+    });
+
 	let toggleCh = (ch) => {
 		renderSettings.toggleChannel(ch);
 	};
@@ -59,7 +65,7 @@
 
     function bgColor(ch) {
         let [h, s, l] = toHSL(`#${ch.color}`);
-        l = 75;
+        l = ch.active ? 70 : 95;
 		var colorInHSL = 'hsl(' + h + ', ' + s + '%, ' + l + '%)';
 		return colorInHSL;
 	}
@@ -72,8 +78,9 @@
 
 {#if showRenderControls}
 	<div transition:fade={{ delay: 0, duration: 300 }} class="renderControls">
-		{#each renderSettings.getChannels() as ch, i}
-			<button class="chButton" 
+		{#each channels as ch, i}
+			<button class="chButton"
+                style:color={ch.active ? 'black' : "rgba(0,0,0,0.6)"}
                 style:background-color={bgColor(ch)}
                 style:--color={borderColor(ch)} on:click={() => toggleCh(i)}
 				>{ch.label || i}</button
@@ -83,23 +90,26 @@
 {/if}
 
 <style>
-	.chButton {
-		background-color: white;
-		color: black;
+
+	.renderControls {
+		position: fixed;
+		top: 10px;
+		padding-left: 10px;
+		background-color: transparent;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+        width: 100%;
+        overflow-x: auto;
+	}
+
+    .chButton {
 		border: solid 2px var(--color);
 		border-radius: 50px;
 		padding: 5px 10px;
 		cursor: pointer;
-	}
-
-	.renderControls {
-		position: absolute;
-		top: 10px;
-		right: 10px;
-		background-color: transparent;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		gap: 10px;
+        white-space: nowrap;
+        max-width: 200px;
+        text-overflow: ellipsis;
 	}
 </style>
