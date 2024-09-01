@@ -105,6 +105,7 @@
 	-->
 	<div
 		class="container scrollbar-hidden"
+		style:--bg={showRenderControls ? "black" : "lightgrey"}
 		use:scrollSelectedIntoView={imgIndex}
 		on:scrollend={handleScrollEnd}
 	>
@@ -156,6 +157,7 @@
 		overflow-x: scroll;
 		scroll-snap-type: x mandatory;
 		gap: 20px;
+		background-color: var(--bg);
 	}
 	.viewer {
 		background-size: contain;

@@ -92,7 +92,7 @@
 <style>
 
 	.renderControls {
-		position: fixed;
+		position: absolute;
 		top: 10px;
 		padding-left: 10px;
 		background-color: transparent;
@@ -101,6 +101,7 @@
 		gap: 10px;
         width: 100%;
         overflow-x: auto;
+        z-index: 1;
 	}
 
     .chButton {

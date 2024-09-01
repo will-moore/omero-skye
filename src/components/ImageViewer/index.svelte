@@ -94,7 +94,6 @@
 	on:scrollend={handleScrollEnd}
 	style:width="{innerWidth}px"
 	style:height="{innerHeight}px"
-	style:--bg={showRenderControls ? "black" : "lightgrey"}
 >
 	<!-- ImageWrapper gives the image margin top/bottom so that it is in
 	the centre of the viewport when zoomed out -->
@@ -126,9 +125,9 @@
 			<ImgdataInfo {imgData} {baseUrl}/>
 		</div>
 	{/if}
-
-	<RenderControls {renderSettings} {showRenderControls} />
 </div>
+
+<RenderControls {renderSettings} {showRenderControls} />
 
 <style>
 	@keyframes shrink-image {
