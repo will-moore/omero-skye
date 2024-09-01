@@ -3,6 +3,7 @@
 
 	export let renderSettings;
 	export let showRenderControls;
+    export let cssFixed = false;
 
     let channels = renderSettings.getChannels();
 
@@ -77,7 +78,9 @@
 </script>
 
 {#if showRenderControls}
-	<div transition:fade={{ delay: 0, duration: 300 }} class="renderControls">
+	<div transition:fade={{ delay: 0, duration: 300 }}
+        style:position={cssFixed ? 'fixed' : 'absolute'}
+        class="renderControls">
 		{#each channels as ch, i}
 			<button class="chButton"
                 style:color={ch.active ? 'black' : "rgba(0,0,0,0.6)"}
@@ -91,9 +94,18 @@
 
 <style>
 
+    @keyframes fadeout {
+		from {
+			opacity: 1;
+		}
+		to {
+			opacity: 0;
+		}
+	}
+
 	.renderControls {
-		position: absolute;
-		top: 10px;
+		bottom: 10px;
+        left: 0;
 		padding-left: 10px;
 		background-color: transparent;
 		display: flex;
@@ -102,6 +114,10 @@
         width: 100%;
         overflow-x: auto;
         z-index: 1;
+
+        /*  */
+        animation: fadeout linear forwards;
+		animation-timeline: scroll();
 	}
 
     .chButton {

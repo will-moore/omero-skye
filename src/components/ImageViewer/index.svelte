@@ -8,6 +8,7 @@
 	export let imgData;
 	export let baseUrl;
 	export let showRenderControls;
+	export let carouselSelected = true;
 
 	let renderSettings = new RenderingSettings(imgData);
 	let renderQuery = renderSettings.getQueryString();
@@ -119,6 +120,10 @@
 			src="{BASE_URL}/figure/render_scaled_region/{imgData.id}/{theZ}/{theT}/?{renderQuery}"
 			style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{imgData.id}/')"
 		/>
+
+		{#if carouselSelected}
+			<RenderControls {renderSettings} {showRenderControls} cssFixed={zoom > 100}/>
+		{/if}
 	</div>
 	{#if zoom == 100}
 		<div class="info" style:height="{innerHeight * 0.7}px">
@@ -127,7 +132,6 @@
 	{/if}
 </div>
 
-<RenderControls {renderSettings} {showRenderControls} />
 
 <style>
 	@keyframes shrink-image {
@@ -138,14 +142,6 @@
 			width: var(--shrinkWidth);
 			height: var(--shrinkHeight);
 			left: var(--shrinkLeft);
-		}
-	}
-	@keyframes fade-in {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
 		}
 	}
 

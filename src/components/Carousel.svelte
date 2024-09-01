@@ -116,7 +116,9 @@
 				style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{iid}/')"
 			>
 				{#if imgDataByIds[iid]}
-					<ImageViewer imgData={imgDataByIds[iid]} {baseUrl} {showRenderControls} />
+					<ImageViewer imgData={imgDataByIds[iid]}
+						carouselSelected={iid === imageIds[imgIndex]}
+						{baseUrl} {showRenderControls} />
 				{/if}
 			</div>
 		{/each}
