@@ -13,6 +13,28 @@ export class RenderingSettings {
         });
     }
 
+    setChannelStart(idx, value) {
+        this.store.update((imgData) => {
+            imgData.channels[idx].window.start = value;
+            return imgData;
+        });
+    }
+
+    setChannelEnd(idx, value) {
+        this.store.update((imgData) => {
+            imgData.channels[idx].window.end = value;
+            return imgData;
+        });
+    }
+
+    setChannelWindow(idx, start, end) {
+        this.store.update((imgData) => {
+            imgData.channels[idx].window.start = start;
+            imgData.channels[idx].window.end = end;
+            return imgData;
+        });
+    }
+
     getChannels() {
         return get(this.store).channels;
     }

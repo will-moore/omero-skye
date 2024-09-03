@@ -1,100 +1,115 @@
 <script>
+	import RangeSlider from 'svelte-range-slider-pips';
 	import { fade } from 'svelte/transition';
+	import { toHSL } from '$lib/util';
 
 	export let renderSettings;
 	export let showRenderControls;
-    export let cssFixed = false;
+	export let cssFixed = false;
 
-    let channels = renderSettings.getChannels();
+	let channels = renderSettings.getChannels();
+	let selectedChannelIndex = -1;
 
-    renderSettings.subscribe(() => {
-        channels = renderSettings.getChannels();
-    });
+	$: selectedChannel = selectedChannelIndex >= 0 ? channels[selectedChannelIndex] : undefined;
+
+	renderSettings.subscribe(() => {
+		channels = renderSettings.getChannels();
+	});
 
 	let toggleCh = (ch) => {
 		renderSettings.toggleChannel(ch);
 	};
 
-	function chButtonColor(ch) {
-		// if the channel color is black, change it to white (maybe don't need this!?)
-		let color = ch.color;
-		if (color === '000000') {
-			color = 'FFFFFF';
+	let selectChannel = (i) => {
+		if (selectedChannelIndex === i) {
+			selectedChannelIndex = -1;
+			return;
 		}
-		return toHSL(`#${color}`);
-	}
+		selectedChannelIndex = i;
+	};
 
-	function toHSL(hex) {
-		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-
-		var r = parseInt(result[1], 16);
-		var g = parseInt(result[2], 16);
-		var b = parseInt(result[3], 16);
-
-		(r /= 255), (g /= 255), (b /= 255);
-		var max = Math.max(r, g, b),
-			min = Math.min(r, g, b);
-		var h = 0;
-		var s = 0;
-		var l = (max + min) / 2;
-
-		if (max == min) {
-			h = s = 0; // achromatic
-		} else {
-			var d = max - min;
-			s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-			switch (max) {
-				case r:
-					h = (g - b) / d + (g < b ? 6 : 0);
-					break;
-				case g:
-					h = (b - r) / d + 2;
-					break;
-				case b:
-					h = (r - g) / d + 4;
-					break;
-			}
-			h /= 6;
-		}
-		h = h * 360;
-		s = s * 100;
-		s = Math.round(s);
-		l = l * 100;
-		l = Math.round(l);
-        return [h, s, l];
+    let handleSliderStop = (event) => {
+        let [start, end] = event.detail.values;
+        renderSettings.setChannelWindow(selectedChannelIndex, start, end);
     }
 
-    function bgColor(ch) {
-        let [h, s, l] = toHSL(`#${ch.color}`);
-        l = ch.active ? 70 : 95;
+	function handleStartChange(event) {
+		let value = event.target.value;
+		console.log('handleStartChange', value);
+		renderSettings.setChannelStart(selectedChannelIndex, value);
+	}
+
+	function handleEndChange(event) {
+		let value = event.target.value;
+		console.log('handleEndChange', value);
+		renderSettings.setChannelEnd(selectedChannelIndex, value);
+	}
+
+	function bgColor(ch) {
+		let [h, s, l] = toHSL(`#${ch.color}`);
+		l = 70;
 		var colorInHSL = 'hsl(' + h + ', ' + s + '%, ' + l + '%)';
 		return colorInHSL;
 	}
-    function borderColor(ch) {
-        let [h, s, l] = toHSL(`#${ch.color}`);
+	function borderColor(ch) {
+		let [h, s, l] = toHSL(`#${ch.color}`);
 		var colorInHSL = 'hsl(' + h + ', ' + s + '%, ' + l + '%)';
 		return colorInHSL;
-    }
+	}
 </script>
 
 {#if showRenderControls}
-	<div transition:fade={{ delay: 0, duration: 300 }}
-        style:position={cssFixed ? 'fixed' : 'absolute'}
-        class="renderControls">
-		{#each channels as ch, i}
-			<button class="chButton"
-                style:color={ch.active ? 'black' : "rgba(0,0,0,0.6)"}
-                style:background-color={bgColor(ch)}
-                style:--color={borderColor(ch)} on:click={() => toggleCh(i)}
-				>{ch.label || i}</button
-			>
-		{/each}
+	<div
+		transition:fade={{ delay: 0, duration: 300 }}
+		style:position={cssFixed ? 'fixed' : 'absolute'}
+		class="renderControls"
+	>
+		{#if selectedChannel}
+			{@const colorLt = bgColor(selectedChannel)}
+			{@const color = borderColor(selectedChannel)}
+			<div style="width: 100%; padding: 0 10px;">
+				<div
+					class="selectedChannel"
+					style:background-color="transparent"
+					style:border-color="transparent"
+					style="--range-slider:     #666;
+                    --range-handle-inactive:   {colorLt};
+                    --range-handle:            {colorLt};
+                    --range-handle-focus:      {colorLt};
+                    --range-handle-border:     {color};
+                    --range-range-inactive:    {color};
+                    --range-range:             {color};
+                    --range-float-inactive:    #333;
+                    --range-float:             #333;
+                    --range-float-text:        hsl(0, 0%, 100%);"
+				>
+					<RangeSlider
+                        on:stop={handleSliderStop}
+						range
+						float
+						min={selectedChannel.window.min}
+						max={selectedChannel.window.max}
+						values={[selectedChannel.window.start, selectedChannel.window.end]}
+					/>
+				</div>
+			</div>
+		{/if}
+		<div class="chButtons">
+			{#each channels as ch, i}
+				<button
+					class="chButton"
+					style:color={ch.active ? 'black' : 'rgba(0,0,0,0.6)'}
+					style:background-color={bgColor(ch)}
+					style:--color={borderColor(ch)}
+					on:click={() => selectChannel(i)}>{ch.label || i}</button
+				>
+			{/each}
+		</div>
 	</div>
 {/if}
 
 <style>
-
-    @keyframes fadeout {
+	@keyframes fadeout {
 		from {
 			opacity: 1;
 		}
@@ -105,28 +120,43 @@
 
 	.renderControls {
 		bottom: 10px;
-        left: 0;
-		padding-left: 10px;
+		left: 0;
 		background-color: transparent;
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		gap: 10px;
-        width: 100%;
-        overflow-x: auto;
-        z-index: 1;
+		width: 100%;
+		overflow-x: auto;
+		z-index: 1;
 
-        /*  */
-        animation: fadeout linear forwards;
+		/* fade the controls as the info pane scrolls up */
+		animation: fadeout linear forwards;
 		animation-timeline: scroll();
 	}
 
-    .chButton {
+	.selectedChannel {
+		border-radius: 20px;
+		border: solid 2px transparent;
+		width: 100%;
+		padding: 20px 5px 3px 5px;
+	}
+
+	.chButtons {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 10px;
+		padding-left: 10px;
+	}
+
+	.chButton {
 		border: solid 2px var(--color);
 		border-radius: 50px;
 		padding: 5px 10px;
 		cursor: pointer;
-        white-space: nowrap;
-        max-width: 200px;
-        text-overflow: ellipsis;
+		white-space: nowrap;
+		max-width: 200px;
+		text-overflow: ellipsis;
 	}
 </style>
