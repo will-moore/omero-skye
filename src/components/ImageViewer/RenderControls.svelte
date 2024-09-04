@@ -94,7 +94,7 @@
 				</div>
 			</div>
 		{/if}
-		<div class="chButtons">
+		<div class="chButtons scrollbar-hidden">
 			{#each channels as ch, i}
 				<button
 					class="chButton"
@@ -148,6 +148,8 @@
 		align-items: center;
 		gap: 10px;
 		padding-left: 10px;
+        width: 100%;
+        overflow: auto;
 	}
 
 	.chButton {
@@ -158,5 +160,16 @@
 		white-space: nowrap;
 		max-width: 200px;
 		text-overflow: ellipsis;
+	}
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+	.scrollbar-hidden::-webkit-scrollbar {
+		display: none;
+	}
+
+	/* Hide scrollbar for IE, Edge add Firefox */
+	.scrollbar-hidden {
+		-ms-overflow-style: none;
+		scrollbar-width: none; /* Firefox */
 	}
 </style>
