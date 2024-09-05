@@ -20,20 +20,20 @@
 		renderSettings.toggleChannel(ch);
 	};
 
-    let handleColorChange = (ch) => (event) => {
-        renderSettings.setChannelColor(ch, event.target.value.slice(1));
-    };
+	let handleColorChange = (ch) => (event) => {
+		renderSettings.setChannelColor(ch, event.target.value.slice(1));
+	};
 
 	let selectChannel = (i) => {
-        // de-select channel if already selected
+		// de-select channel if already selected
 		if (selectedChannelIndex === i) {
 			selectedChannelIndex = -1;
 			return;
 		}
-        // turn channel ON if it is OFF
-        if (!channels[i].active) {
-            renderSettings.toggleChannel(i);
-        }
+		// turn channel ON if it is OFF
+		if (!channels[i].active) {
+			renderSettings.toggleChannel(i);
+		}
 		selectedChannelIndex = i;
 	};
 
@@ -60,17 +60,23 @@
 		{@const colorLt = bgColor(selectedChannel)}
 		{@const color = borderColor(selectedChannel)}
 		<button
-            transition:fade={{ delay: 0, duration: 300 }}
+			transition:fade={{ delay: 0, duration: 300 }}
 			class="toggleButton"
 			style:position={cssFixed ? 'fixed' : 'absolute'}
 			style:border-color={color}
 			style:background-color={colorLt}
-            on:click={() => toggleCh(selectedChannelIndex)}
+			on:click={() => toggleCh(selectedChannelIndex)}
 		>
 			{selectedChannel.active ? 'ON' : 'OFF'}
 		</button>
 
-        <input class="colorPicker" on:change={handleColorChange(selectedChannelIndex)} value={`#${selectedChannel.color}`} style:position={cssFixed ? 'fixed' : 'absolute'} type="color"/>
+		<input
+			class="colorPicker"
+			on:change={handleColorChange(selectedChannelIndex)}
+			value={`#${selectedChannel.color}`}
+			style:position={cssFixed ? 'fixed' : 'absolute'}
+			type="color"
+		/>
 	{/if}
 
 	<div
@@ -173,26 +179,26 @@
 		padding: 10px 15px;
 		cursor: pointer;
 		right: 20px;
-        bottom: 115px;
-        font-weight: bold;
-        /* fade the controls as the info pane scrolls up */
+		bottom: 115px;
+		font-weight: bold;
+		/* fade the controls as the info pane scrolls up */
 		animation: fadeout linear forwards;
 		animation-timeline: scroll();
 	}
 
-    .colorPicker {
-        border: solid 2px;
+	.colorPicker {
+		border: solid 2px;
 		border-radius: 50px;
 		padding: 0;
 		cursor: pointer;
 		left: 20px;
-        bottom: 115px;
-        height: 50px;
-        width: 50px;
-        /* fade the controls as the info pane scrolls up */
+		bottom: 115px;
+		height: 50px;
+		width: 50px;
+		/* fade the controls as the info pane scrolls up */
 		animation: fadeout linear forwards;
 		animation-timeline: scroll();
-    }
+	}
 
 	.chButton {
 		border: solid 2px var(--color);
