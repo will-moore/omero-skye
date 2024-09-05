@@ -21,33 +21,26 @@
 	};
 
 	let selectChannel = (i) => {
+        // de-select channel if already selected
 		if (selectedChannelIndex === i) {
 			selectedChannelIndex = -1;
 			return;
 		}
+        // turn channel ON if it is OFF
+        if (!channels[i].active) {
+            renderSettings.toggleChannel(i);
+        }
 		selectedChannelIndex = i;
 	};
 
-    let handleSliderStop = (event) => {
-        let [start, end] = event.detail.values;
-        renderSettings.setChannelWindow(selectedChannelIndex, start, end);
-    }
-
-	function handleStartChange(event) {
-		let value = event.target.value;
-		console.log('handleStartChange', value);
-		renderSettings.setChannelStart(selectedChannelIndex, value);
-	}
-
-	function handleEndChange(event) {
-		let value = event.target.value;
-		console.log('handleEndChange', value);
-		renderSettings.setChannelEnd(selectedChannelIndex, value);
-	}
+	let handleSliderStop = (event) => {
+		let [start, end] = event.detail.values;
+		renderSettings.setChannelWindow(selectedChannelIndex, start, end);
+	};
 
 	function bgColor(ch) {
 		let [h, s, l] = toHSL(`#${ch.color}`);
-		l = 70;
+		l = ch.active ? 65 : 80;
 		var colorInHSL = 'hsl(' + h + ', ' + s + '%, ' + l + '%)';
 		return colorInHSL;
 	}
@@ -59,6 +52,21 @@
 </script>
 
 {#if showRenderControls}
+	{#if selectedChannel}
+		{@const colorLt = bgColor(selectedChannel)}
+		{@const color = borderColor(selectedChannel)}
+		<button
+            transition:fade={{ delay: 0, duration: 300 }}
+			class="toggleButton"
+			style:position={cssFixed ? 'fixed' : 'absolute'}
+			style:border-color={color}
+			style:background-color={colorLt}
+            on:click={() => toggleCh(selectedChannelIndex)}
+		>
+			{selectedChannel.active ? 'ON' : 'OFF'}
+		</button>
+	{/if}
+
 	<div
 		transition:fade={{ delay: 0, duration: 300 }}
 		style:position={cssFixed ? 'fixed' : 'absolute'}
@@ -84,7 +92,7 @@
                     --range-float-text:        hsl(0, 0%, 100%);"
 				>
 					<RangeSlider
-                        on:stop={handleSliderStop}
+						on:stop={handleSliderStop}
 						range
 						float
 						min={selectedChannel.window.min}
@@ -140,6 +148,7 @@
 		border: solid 2px transparent;
 		width: 100%;
 		padding: 20px 5px 3px 5px;
+		position: relative;
 	}
 
 	.chButtons {
@@ -148,8 +157,21 @@
 		align-items: center;
 		gap: 10px;
 		padding-left: 10px;
-        width: 100%;
-        overflow: auto;
+		width: 100%;
+		overflow: auto;
+	}
+
+	.toggleButton {
+		border: solid 2px;
+		border-radius: 50px;
+		padding: 10px 15px;
+		cursor: pointer;
+		right: 20px;
+        bottom: 115px;
+        font-weight: bold;
+        /* fade the controls as the info pane scrolls up */
+		animation: fadeout linear forwards;
+		animation-timeline: scroll();
 	}
 
 	.chButton {
@@ -162,7 +184,7 @@
 		text-overflow: ellipsis;
 	}
 
-    /* Hide scrollbar for Chrome, Safari and Opera */
+	/* Hide scrollbar for Chrome, Safari and Opera */
 	.scrollbar-hidden::-webkit-scrollbar {
 		display: none;
 	}
