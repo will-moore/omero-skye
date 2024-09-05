@@ -13,6 +13,13 @@ export class RenderingSettings {
         });
     }
 
+    setChannelColor(idx, value) {
+        this.store.update((imgData) => {
+            imgData.channels[idx].color = value;
+            return imgData;
+        });
+    }
+
     setChannelStart(idx, value) {
         this.store.update((imgData) => {
             imgData.channels[idx].window.start = value;

@@ -20,6 +20,10 @@
 		renderSettings.toggleChannel(ch);
 	};
 
+    let handleColorChange = (ch) => (event) => {
+        renderSettings.setChannelColor(ch, event.target.value.slice(1));
+    };
+
 	let selectChannel = (i) => {
         // de-select channel if already selected
 		if (selectedChannelIndex === i) {
@@ -65,6 +69,8 @@
 		>
 			{selectedChannel.active ? 'ON' : 'OFF'}
 		</button>
+
+        <input class="colorPicker" on:change={handleColorChange(selectedChannelIndex)} value={`#${selectedChannel.color}`} style:position={cssFixed ? 'fixed' : 'absolute'} type="color"/>
 	{/if}
 
 	<div
@@ -173,6 +179,20 @@
 		animation: fadeout linear forwards;
 		animation-timeline: scroll();
 	}
+
+    .colorPicker {
+        border: solid 2px;
+		border-radius: 50px;
+		padding: 0;
+		cursor: pointer;
+		left: 20px;
+        bottom: 115px;
+        height: 50px;
+        width: 50px;
+        /* fade the controls as the info pane scrolls up */
+		animation: fadeout linear forwards;
+		animation-timeline: scroll();
+    }
 
 	.chButton {
 		border: solid 2px var(--color);
