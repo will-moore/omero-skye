@@ -1,6 +1,6 @@
 <script>
 	import Fa from 'svelte-fa';
-	import { faTags, faAngleLeft} from '@fortawesome/free-solid-svg-icons';
+	import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 
 	import Carousel from '../../../../../../components/Carousel.svelte';
 	

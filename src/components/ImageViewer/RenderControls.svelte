@@ -1,27 +1,34 @@
 <script>
+	import Fa from 'svelte-fa';
 	import RangeSlider from 'svelte-range-slider-pips';
 	import { fade } from 'svelte/transition';
 	import { toHSL } from '$lib/util';
+	import { faEyeDropper } from '@fortawesome/free-solid-svg-icons';
 
+	// renderSettings is a store that holds the rendering settings for the image
 	export let renderSettings;
-	export let showRenderControls;
+	export let showRenderControls = false;
+	// cssFixed when image is zoomed-in, so controls are fixed to the screen
+	// but when zoomed-out to 100%, controls are absolute and scroll with the image
 	export let cssFixed = false;
 
 	let channels = renderSettings.getChannels();
-	let selectedChannelIndex = -1;
 
+	// Start with no channel selected
+	let selectedChannelIndex = -1;
 	$: selectedChannel = selectedChannelIndex >= 0 ? channels[selectedChannelIndex] : undefined;
 
+	// Subscribe to changes in renderSettings
 	renderSettings.subscribe(() => {
 		channels = renderSettings.getChannels();
 	});
 
-	let toggleCh = (ch) => {
-		renderSettings.toggleChannel(ch);
+	let toggleCh = (index) => {
+		renderSettings.toggleChannel(index);
 	};
 
-	let handleColorChange = (ch) => (event) => {
-		renderSettings.setChannelColor(ch, event.target.value.slice(1));
+	let handleColorChange = (index) => (event) => {
+		renderSettings.setChannelColor(index, event.target.value.slice(1));
 	};
 
 	let selectChannel = (i) => {
@@ -44,7 +51,7 @@
 
 	function bgColor(ch) {
 		let [h, s, l] = toHSL(`#${ch.color}`);
-		l = ch.active ? 65 : 80;
+		l = ch.active ? 65 : 90;
 		var colorInHSL = 'hsl(' + h + ', ' + s + '%, ' + l + '%)';
 		return colorInHSL;
 	}
@@ -70,13 +77,19 @@
 			{selectedChannel.active ? 'ON' : 'OFF'}
 		</button>
 
-		<input
+		<label
+			transition:fade={{ delay: 0, duration: 300 }}
 			class="colorPicker"
-			on:change={handleColorChange(selectedChannelIndex)}
-			value={`#${selectedChannel.color}`}
 			style:position={cssFixed ? 'fixed' : 'absolute'}
-			type="color"
-		/>
+			style:background-color={color}
+		>
+			<Fa icon={faEyeDropper} color="#000" size="lg" />
+			<input
+				on:change={handleColorChange(selectedChannelIndex)}
+				value={`#${selectedChannel.color}`}
+				type="color"
+			/>
+		</label>
 	{/if}
 
 	<div
@@ -88,6 +101,7 @@
 			{@const colorLt = bgColor(selectedChannel)}
 			{@const color = borderColor(selectedChannel)}
 			<div style="width: 100%; padding: 0 10px;">
+				<!-- We pass a bunch of colors down to the RangeSlider -->
 				<div
 					class="selectedChannel"
 					style:background-color="transparent"
@@ -114,6 +128,8 @@
 				</div>
 			</div>
 		{/if}
+
+		<!-- These buttons are always visible (if we're showingRendering controls) -->
 		<div class="chButtons scrollbar-hidden">
 			{#each channels as ch, i}
 				<button
@@ -189,15 +205,16 @@
 	.colorPicker {
 		border: solid 2px;
 		border-radius: 50px;
-		padding: 0;
+		padding: 12px;
 		cursor: pointer;
 		left: 20px;
 		bottom: 115px;
-		height: 50px;
-		width: 50px;
 		/* fade the controls as the info pane scrolls up */
 		animation: fadeout linear forwards;
 		animation-timeline: scroll();
+	}
+	.colorPicker input {
+		display: none;
 	}
 
 	.chButton {
