@@ -14,7 +14,7 @@
 	/** @type {string} */
 	export let baseUrl;
 
-	let showThumbnails = true;
+	export let showRenderControls = false;
 
 	let imgDataByIds = {};
 	imgDataByIds[imgData.id] = imgData;
@@ -32,6 +32,12 @@
 			// something bad happened! try navigating
 			goto(href);
 		}
+	}
+
+	function toggleRenderControls(event) {
+		// ignore event unless it's a click on the img.image
+		if (!(event.target.classList.contains('image') || event.target.classList.contains('imageWrapper'))) return;
+		showRenderControls = !showRenderControls;
 	}
 
 	function handleScrollEnd(evt) {
@@ -98,25 +104,28 @@
 	-->
 	<div
 		class="container scrollbar-hidden"
+		style:--bg={showRenderControls ? "#222" : "lightgrey"}
 		use:scrollSelectedIntoView={imgIndex}
 		on:scrollend={handleScrollEnd}
 	>
 		{#each imageIds.slice(Math.max(imgIndex - 1, 0), imgIndex + 2) as iid, key (iid)}
 			<div
 				class="viewer"
-				on:click={() => (showThumbnails = !showThumbnails)}
+				on:click={toggleRenderControls}
 				class:selected={iid === imageIds[imgIndex]}
 				style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{iid}/')"
 			>
 				{#if imgDataByIds[iid]}
-					<ImageViewer imgData={imgDataByIds[iid]} {baseUrl} />
+					<ImageViewer imgData={imgDataByIds[iid]}
+						carouselSelected={iid === imageIds[imgIndex]}
+						{baseUrl} {showRenderControls} />
 				{/if}
 			</div>
 		{/each}
 	</div>
 </div>
 
-<div class="thumbnails" use:scrollSelectedIntoView={imgIndex} style:bottom={showThumbnails ? 0 : '-60px'}>
+<div class="thumbnails" use:scrollSelectedIntoView={imgIndex} style:bottom={showRenderControls ? '-60px' : 0}>
 	{#each imageIds as iid (iid)}
 		<a href="{baseUrl}{iid}" data-sveltekit-replacestate>
 			<img
@@ -137,7 +146,6 @@
 		touch-action: none;
 		position: fixed;
 		inset: 0;
-		background-color: lightgrey;
 		display: flex;
 		flex-direction: column;
 	}
@@ -150,6 +158,7 @@
 		overflow-x: scroll;
 		scroll-snap-type: x mandatory;
 		gap: 20px;
+		background-color: var(--bg);
 	}
 	.viewer {
 		background-size: contain;

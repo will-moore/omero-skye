@@ -1,10 +1,17 @@
 <script>
 	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
-	import { pinchAction, chMarshal, chMaps } from '$lib/util';
+	import { pinchAction } from '$lib/util';
 	import ImgdataInfo from './ImgdataInfo.svelte';
+	import {RenderingSettings} from '$lib/imgDataStore';
+	import RenderControls from './RenderControls.svelte';
 
 	export let imgData;
 	export let baseUrl;
+	export let showRenderControls;
+	export let carouselSelected = true;
+
+	let renderSettings = new RenderingSettings(imgData);
+	let renderQuery = renderSettings.getQueryString();
 
 	// page width/height - updated on e.g. phone rotation or resize
 	let innerWidth = 0;
@@ -28,7 +35,10 @@
 
 	$: theZ = imgData.rdefs.defaultZ;
 	$: theT = imgData.rdefs.defaultT;
-	$: renderQuery = `c=${imgData.channels.map(chMarshal).join(',')}&m=c&p=normal&ia=${imgData.rdefs.invertAxis ? 1 : 0}&maps=${chMaps(imgData)}`;
+
+	renderSettings.subscribe(imgData => {
+		renderQuery = renderSettings.getQueryString();
+	})
 
 	// point on the image that is at centre of viewport - updated on pan!
 	let panCentre = { x: 0.5, y: 0.5 };
@@ -90,11 +100,13 @@
 	the centre of the viewport when zoomed out -->
 	<div
 		class="imageWrapper"
-		style:background="lightgrey"
 		style:width="{Math.max(imgWidth, innerWidth)}px"
 		style:height="{Math.max(imgHeight, innerHeight)}px"
 	>
+		<!-- image class used to determine target of click
+			TODO: improve decoupling -->
 		<img
+			class="image"
 			class:scroll_shrink={zoom == 100}
 			style:--viewtransitionkey="image-{imgData.id}"
 			style:--shrinkHeight="{imgHeight * 0.5}px"
@@ -105,9 +117,13 @@
 			style:height="{imgHeight}px"
 			style:left="{(Math.max(imgWidth, innerWidth) - imgWidth) / 2}px"
 			alt="Thumbnail of {imgData.meta.Name}"
-			src="{BASE_URL}/webclient/render_image/{imgData.id}/{theZ}/{theT}/?{renderQuery}"
+			src="{BASE_URL}/figure/render_scaled_region/{imgData.id}/{theZ}/{theT}/?{renderQuery}"
 			style:background-image="url('{BASE_URL}/webclient/render_thumbnail/{imgData.id}/')"
 		/>
+
+		{#if carouselSelected}
+			<RenderControls {renderSettings} {showRenderControls} cssFixed={zoom > 100}/>
+		{/if}
 	</div>
 	{#if zoom == 100}
 		<div class="info" style:height="{innerHeight * 0.7}px">
@@ -115,6 +131,7 @@
 		</div>
 	{/if}
 </div>
+
 
 <style>
 	@keyframes shrink-image {
@@ -125,14 +142,6 @@
 			width: var(--shrinkWidth);
 			height: var(--shrinkHeight);
 			left: var(--shrinkLeft);
-		}
-	}
-	@keyframes fade-in {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
 		}
 	}
 
@@ -152,15 +161,17 @@
 
 	.imageWrapper {
 		position: relative;
-		background-color: transparent;
 		scroll-snap-align: end;
+		background-color: var(--bg);
+		transition: background-color 0.3s ease-in-out;
 	}
 	.viewport {
 		position: relative;
 		width: 100%;
 		height: 100%;
 		overflow: auto;
-		background: lightgrey;
+		background-color: var(--bg);
+		transition: background-color 0.3s ease-in-out;
 		scroll-snap-type: y mandatory
 	}
 
