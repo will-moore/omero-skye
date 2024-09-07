@@ -3,7 +3,32 @@ import { writable, get } from 'svelte/store';
 
 export class RenderingSettings {
     constructor(imgData) {
+        // add theZ and theT based on default Z/T
+        imgData.theZ = imgData.rdefs.defaultZ;
+        imgData.theT = imgData.rdefs.defaultT;
         this.store = writable(imgData);
+    }
+
+    getSizeZ() {
+        return get(this.store).size.z;
+    }
+
+    getZ() {
+        return get(this.store).theZ;
+    }
+
+    setZ(theZ) {
+        this.store.update((imgData) => {
+            imgData.theZ = theZ;
+            return imgData;
+        });
+    }
+
+    setT(theT) {
+        this.store.update((imgData) => {
+            imgData.theT = theT;
+            return imgData;
+        });
     }
 
     toggleChannel(idx) {

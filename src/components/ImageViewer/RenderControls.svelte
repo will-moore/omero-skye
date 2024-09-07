@@ -4,6 +4,7 @@
 	import { fade } from 'svelte/transition';
 	import { toHSL } from '$lib/util';
 	import { faEyeDropper } from '@fortawesome/free-solid-svg-icons';
+    import DimensionSlider from './DimensionSlider.svelte';
 
 	// renderSettings is a store that holds the rendering settings for the image
 	export let renderSettings;
@@ -30,6 +31,11 @@
 	let handleColorChange = (index) => (event) => {
 		renderSettings.setChannelColor(index, event.target.value.slice(1));
 	};
+
+    let handleZChange = (event) => {
+        console.log("handleZChange", event);
+        renderSettings.setZ(event.detail);
+    };
 
 	let selectChannel = (i) => {
 		// de-select channel if already selected
@@ -104,8 +110,6 @@
 				<!-- We pass a bunch of colors down to the RangeSlider -->
 				<div
 					class="selectedChannel"
-					style:background-color="transparent"
-					style:border-color="transparent"
 					style="--range-slider:     #666;
                     --range-handle-inactive:   {colorLt};
                     --range-handle:            {colorLt};
@@ -141,6 +145,14 @@
 				>
 			{/each}
 		</div>
+
+        {#if renderSettings.getSizeZ() > 1}
+            <DimensionSlider
+                max={renderSettings.getSizeZ() - 1}
+                value={renderSettings.getZ()}
+                on:change={handleZChange}
+            />
+        {/if}
 	</div>
 {/if}
 
@@ -172,12 +184,13 @@
 	}
 
 	.selectedChannel {
-		border-radius: 20px;
-		border: solid 2px transparent;
+		background: transparent;
 		width: 100%;
-		padding: 20px 5px 3px 5px;
 		position: relative;
 	}
+    .selectedChannel {
+        padding: 20px 5px 3px 5px;
+    }
 
 	.chButtons {
 		display: flex;
@@ -195,7 +208,7 @@
 		padding: 10px 15px;
 		cursor: pointer;
 		right: 20px;
-		bottom: 115px;
+		bottom: 165px;
 		font-weight: bold;
 		/* fade the controls as the info pane scrolls up */
 		animation: fadeout linear forwards;
@@ -208,7 +221,7 @@
 		padding: 12px;
 		cursor: pointer;
 		left: 20px;
-		bottom: 115px;
+		bottom: 165px;
 		/* fade the controls as the info pane scrolls up */
 		animation: fadeout linear forwards;
 		animation-timeline: scroll();
