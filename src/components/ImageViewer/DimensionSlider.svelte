@@ -1,4 +1,6 @@
 <script>
+    import Fa from 'svelte-fa';
+    import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
     import RangeSlider from 'svelte-range-slider-pips';
 
     import { createEventDispatcher } from 'svelte';
@@ -8,15 +10,33 @@
     export let max;
     export let value;
 
+    $: values = [value];
+
     function handleChange(event) {
-        let [value] = event.detail.values;
+        value = event.detail.values[0];
         dispatch('change', value);
     };
+    function handleIncrement(incr) {
+        console.log('handleIncrement', incr)
+        if (value + incr < 0) {
+            return;
+        }
+        if (value + incr > max) {
+            return;
+        }
+        value = value + incr
+        // values = [value + incr];
+        dispatch('change', value);
+    }
 </script>
 
 <div class="zSlider">
+
+    <button class="increment" on:click={() => handleIncrement(-1)}>
+        <Fa icon={faAngleLeft} color="#ddd" size="lg" />
+    </button>
     <div class="sliderWrapper"
-        style="--range-slider:     #bbb;
+        style="--range-slider:     #ddd;
             --range-handle-inactive:   #FFFFFF;
             --range-handle:            #FFFFFF;
             --range-handle-focus:      #FFFFFF;
@@ -28,16 +48,30 @@
         <RangeSlider
             on:stop={handleChange}
             float
+            prefix="Z: "
             min={0}
             {max}
-            values={[value]}
+            {values}
         />
     </div>
-    <div class="sliderLabel">Z</div>
+    <button class="increment" on:click={() => handleIncrement(1)}>
+        <Fa icon={faAngleRight} color="#ddd" size="lg" />
+    </button>
 </div>
 
 
 <style>
+
+:global(.sliderWrapper .rangeSlider.rangeSlider .rangeFloat),
+:global(.sliderWrapper .rangeSlider.rangeSlider.focus .rangeFloat),
+:global(.sliderWrapper .rangeSlider.rangeSlider:hover .rangeFloat) {
+  opacity: 1;
+  top: -.25em;
+  translate: 0% 100%;
+  border-radius: 1em;
+  padding: .25em .75em;
+  pointer-events: all;
+}
 
     :global(.sliderWrapper .rangeSlider) {
         height: 2px;
@@ -58,12 +92,13 @@
         width: 100%;
         flex: auto 1 1;
     }
-    .sliderLabel {
+    .increment {
         color: white;
         flex: 40px 0 0;
         padding: 5px;
-        font-size: 24px;
         font-weight: bold;
+        background-color: transparent;
+        border: none;
     }
 
 </style>
