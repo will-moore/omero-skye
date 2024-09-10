@@ -33,8 +33,10 @@
 	};
 
     let handleZChange = (event) => {
-        console.log("handleZChange", event);
         renderSettings.setZ(event.detail);
+    };
+    let handleTChange = (event) => {
+        renderSettings.setT(event.detail);
     };
 
 	let selectChannel = (i) => {
@@ -150,7 +152,16 @@
             <DimensionSlider
                 max={renderSettings.getSizeZ() - 1}
                 value={renderSettings.getZ()}
+                dimName="Z"
                 on:change={handleZChange}
+            />
+        {/if}
+        {#if renderSettings.getSizeT() > 1}
+            <DimensionSlider
+                max={renderSettings.getSizeT() - 1}
+                value={renderSettings.getT()}
+                dimName="T"
+                on:change={handleTChange}
             />
         {/if}
 	</div>

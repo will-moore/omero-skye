@@ -24,6 +24,14 @@ export class RenderingSettings {
         });
     }
 
+    getSizeT() {
+        return get(this.store).size.t;
+    }
+
+    getT() {
+        return get(this.store).theT;
+    }
+
     setT(theT) {
         this.store.update((imgData) => {
             imgData.theT = theT;

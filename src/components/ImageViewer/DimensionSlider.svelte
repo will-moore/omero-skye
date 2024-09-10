@@ -9,6 +9,7 @@
 
     export let max;
     export let value;
+    export let dimName;
 
     $: values = [value];
 
@@ -30,7 +31,7 @@
     }
 </script>
 
-<div class="zSlider">
+<div class="dimSlider">
 
     <button class="increment" on:click={() => handleIncrement(-1)}>
         <Fa icon={faAngleLeft} color="#ddd" size="lg" />
@@ -48,7 +49,7 @@
         <RangeSlider
             on:stop={handleChange}
             float
-            prefix="Z: "
+            prefix={`${dimName}:`}
             min={0}
             {max}
             {values}
@@ -79,7 +80,7 @@
     :global(.sliderWrapper .rangeSlider .rangeHandle) {
         top: 1px;
     }
-    .zSlider {
+    .dimSlider {
         display: flex;
         flex-direction: row;
         align-items: center;
