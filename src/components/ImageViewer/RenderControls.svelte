@@ -4,7 +4,7 @@
 	import { fade } from 'svelte/transition';
 	import { toHSL } from '$lib/util';
 	import { faEyeDropper } from '@fortawesome/free-solid-svg-icons';
-    import DimensionSlider from './DimensionSlider.svelte';
+	import DimensionSlider from './DimensionSlider.svelte';
 
 	// renderSettings is a store that holds the rendering settings for the image
 	export let renderSettings;
@@ -32,12 +32,12 @@
 		renderSettings.setChannelColor(index, event.target.value.slice(1));
 	};
 
-    let handleZChange = (event) => {
-        renderSettings.setZ(event.detail);
-    };
-    let handleTChange = (event) => {
-        renderSettings.setT(event.detail);
-    };
+	let handleZChange = (event) => {
+		renderSettings.setZ(event.detail);
+	};
+	let handleTChange = (event) => {
+		renderSettings.setT(event.detail);
+	};
 
 	let selectChannel = (i) => {
 		// de-select channel if already selected
@@ -68,16 +68,33 @@
 		var colorInHSL = 'hsl(' + h + ', ' + s + '%, ' + l + '%)';
 		return colorInHSL;
 	}
+
+	// Calculate the bottom position of the buttons based on whether Z/T sliders will be shown
+	let buttonsBottom = 115;
+	if (renderSettings.getSizeZ() > 1) {
+		buttonsBottom += 44;
+	}
+	if (renderSettings.getSizeT() > 1) {
+		buttonsBottom += 44;
+	}
 </script>
 
 {#if showRenderControls}
 	{#if selectedChannel}
+	<!-- These 2 buttons have to be fixed/abosolute rather than contained
+	 with the renderControls panel below because we don't want the area
+	 between the buttons to be covered with the renderControls panel since
+	 you then can't scroll the image behind!
+	 So we need to calulate their Z position based on whether Z/T sliders
+	 will be shown (instead of just letting the sliders push the buttons up)
+	-->
 		{@const colorLt = bgColor(selectedChannel)}
 		{@const color = borderColor(selectedChannel)}
 		<button
 			transition:fade={{ delay: 0, duration: 300 }}
 			class="toggleButton"
 			style:position={cssFixed ? 'fixed' : 'absolute'}
+			style:bottom={buttonsBottom + 'px'}
 			style:border-color={color}
 			style:background-color={colorLt}
 			on:click={() => toggleCh(selectedChannelIndex)}
@@ -89,7 +106,9 @@
 			transition:fade={{ delay: 0, duration: 300 }}
 			class="colorPicker"
 			style:position={cssFixed ? 'fixed' : 'absolute'}
+			style:bottom={buttonsBottom + 'px'}
 			style:background-color={color}
+			style:border-color={color}
 		>
 			<Fa icon={faEyeDropper} color="#000" size="lg" />
 			<input
@@ -148,22 +167,22 @@
 			{/each}
 		</div>
 
-        {#if renderSettings.getSizeZ() > 1}
-            <DimensionSlider
-                max={renderSettings.getSizeZ() - 1}
-                value={renderSettings.getZ()}
-                dimName="Z"
-                on:change={handleZChange}
-            />
-        {/if}
-        {#if renderSettings.getSizeT() > 1}
-            <DimensionSlider
-                max={renderSettings.getSizeT() - 1}
-                value={renderSettings.getT()}
-                dimName="T"
-                on:change={handleTChange}
-            />
-        {/if}
+		{#if renderSettings.getSizeZ() > 1}
+			<DimensionSlider
+				max={renderSettings.getSizeZ() - 1}
+				value={renderSettings.getZ()}
+				dimName="Z"
+				on:change={handleZChange}
+			/>
+		{/if}
+		{#if renderSettings.getSizeT() > 1}
+			<DimensionSlider
+				max={renderSettings.getSizeT() - 1}
+				value={renderSettings.getT()}
+				dimName="T"
+				on:change={handleTChange}
+			/>
+		{/if}
 	</div>
 {/if}
 
@@ -199,9 +218,9 @@
 		width: 100%;
 		position: relative;
 	}
-    .selectedChannel {
-        padding: 20px 5px 3px 5px;
-    }
+	.selectedChannel {
+		padding: 20px 5px 3px 5px;
+	}
 
 	.chButtons {
 		display: flex;
@@ -216,10 +235,10 @@
 	.toggleButton {
 		border: solid 2px;
 		border-radius: 50px;
+		height: 50px;
 		padding: 10px 15px;
 		cursor: pointer;
 		right: 20px;
-		bottom: 165px;
 		font-weight: bold;
 		/* fade the controls as the info pane scrolls up */
 		animation: fadeout linear forwards;
@@ -229,10 +248,10 @@
 	.colorPicker {
 		border: solid 2px;
 		border-radius: 50px;
+		height: 50px;
 		padding: 12px;
 		cursor: pointer;
 		left: 20px;
-		bottom: 165px;
 		/* fade the controls as the info pane scrolls up */
 		animation: fadeout linear forwards;
 		animation-timeline: scroll();
