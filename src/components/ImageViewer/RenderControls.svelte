@@ -69,6 +69,15 @@
 		return colorInHSL;
 	}
 
+	// Channel slider range shouldn't be TOO much wider than the actual range
+	$: chMax = 0;
+	$: {
+		if (selectedChannel) {
+			let chRange = selectedChannel.window.end - selectedChannel.window.start;
+			chMax = Math.min(selectedChannel.window.max, selectedChannel.window.start + chRange * 4);
+		}
+	}
+
 	// Calculate the bottom position of the buttons based on whether Z/T sliders will be shown
 	let buttonsBottom = 115;
 	if (renderSettings.getSizeZ() > 1) {
@@ -81,7 +90,7 @@
 
 {#if showRenderControls}
 	{#if selectedChannel}
-	<!-- These 2 buttons have to be fixed/abosolute rather than contained
+		<!-- These 2 buttons have to be fixed/abosolute rather than contained
 	 with the renderControls panel below because we don't want the area
 	 between the buttons to be covered with the renderControls panel since
 	 you then can't scroll the image behind!
@@ -147,7 +156,7 @@
 						range
 						float
 						min={selectedChannel.window.min}
-						max={selectedChannel.window.max}
+						max={chMax}
 						values={[selectedChannel.window.start, selectedChannel.window.end]}
 					/>
 				</div>
