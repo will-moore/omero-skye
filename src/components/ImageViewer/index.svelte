@@ -38,6 +38,8 @@
 
 	renderSettings.subscribe(imgData => {
 		renderQuery = renderSettings.getQueryString();
+		theZ = imgData.theZ;
+		theT = imgData.theT;
 	})
 
 	// point on the image that is at centre of viewport - updated on pan!
