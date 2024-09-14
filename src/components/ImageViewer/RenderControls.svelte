@@ -59,7 +59,12 @@
 
 	function bgColor(ch) {
 		let [h, s, l] = toHSL(`#${ch.color}`);
+		// make the color lighter if the channel is active
 		l = ch.active ? 65 : 90;
+		// if the channel is white, make it darker
+		if (ch.color.toLowerCase() === 'ffffff') {
+			l = ch.active ? 90 : 65;
+		}
 		var colorInHSL = 'hsl(' + h + ', ' + s + '%, ' + l + '%)';
 		return colorInHSL;
 	}
