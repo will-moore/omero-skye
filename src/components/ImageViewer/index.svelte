@@ -12,7 +12,7 @@
 
 	let renderSettings = new RenderingSettings(imgData);
 	let renderQuery = renderSettings.getQueryString();
-	let loadingImage = true;
+	let loadingImage = false;
 
 	// page width/height - updated on e.g. phone rotation or resize
 	let innerWidth = 0;
@@ -91,9 +91,10 @@
 <!-- TODO: bind to viewport element instead of window? -->
 <svelte:window bind:innerWidth bind:innerHeight on:keydown|preventDefault={handleKeydown} />
 
+<!-- spinner is 'fixed' so make sure we don't show it for off-screen carousel images -->
 <div
 	class="viewport scrollbar-hidden"
-	class:spinner={loadingImage}
+	class:spinner={loadingImage && carouselSelected}
 	use:scrollposition={imgWidth}
 	use:pinchAction
 	on:pinch={handlePinch}
