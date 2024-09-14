@@ -11,12 +11,16 @@
 
 </script>
 
-<p>
-    ID: {ann.id} <br>
-    Namespace: {ann.ns} <br>
-    Linked by: {ann.link.owner.firstName} {ann.link.owner.lastName} <br>
-    On: {formatDate(ann.link.date)}
-</p>
+<details>
+    <summary>{formatDate(ann.link.date)}</summary>
+    <!-- description list <dl> description term <dt> and details <dd> -->
+    <dl>
+        <dt>ID</dt><dd>{ann.id}</dd><br>
+        <dt>Namespace</dt><dd>{ann.ns}</dd><br>
+        <dt>Linked by</dt><dd>{ann.link.owner.firstName} {ann.link.owner.lastName}</dd><br>
+        <dt>On</dt><dd>{formatDate(ann.link.date)}</dd>
+    </dl>
+</details>
 
 
     {#if ann.class == "MapAnnotationI"}
@@ -32,8 +36,32 @@
     {/if}
 
 <style>
-    p {
+    details {
+        margin-top: 15px;
+        background-color: #e0e0e0;
+        border-radius: 10px;
+    }
+    summary {
+        padding: 5px;
+    }
+    dl {
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 80%;
+        background-color: rgb(31, 31, 31);
+        color: white;
+        padding: 10px;
+        border-radius: 0 0 10px 10px;
+        overflow: auto;
+    }
+    dt, dd {
+        display: inline;
+    }
+    dt {
+        font-weight: bold;
+    }
+    dd {
+        color: #eee;
+    }
+    dt:after {
+        content: ": "
     }
 </style>
