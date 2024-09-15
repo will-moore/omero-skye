@@ -1,5 +1,7 @@
 <script>
 	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
+	import { pushState } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { pinchAction } from '$lib/util';
 	import ImgdataInfo from './ImgdataInfo.svelte';
 	import {RenderingSettings} from '$lib/imgDataStore';
@@ -42,12 +44,47 @@
 		theZ = imgData.theZ;
 		theT = imgData.theT;
 		loadingImage = true;
-	})
+	});
+
+	let viewport;
+
+	$ : {
+		// if user hits BACK, we want to scroll to hide info panel
+		console.log("$ page UPDATE? $page.state.scroll", $page.state.scroll);
+		if ((!$page.state.scroll) && viewport && infoShowing) {
+			infoShowing = false;
+			console.log("scrollllliiiiing....")
+			viewport.scrollTo({
+				top: 0,
+				behavior: "smooth",
+			});
+		}
+	}
 
 	// point on the image that is at centre of viewport - updated on pan!
 	let panCentre = { x: 0.5, y: 0.5 };
 
+	let infoShowing = false;
+
 	function handleScrollEnd(event) {
+		// If we're zoomed out, and we scroll down, this is showing the info panel...
+		// ...add to history so we can go BACK to hide it
+		console.log("handleScrollEnd", event.target.scrollTop, zoom);
+		if (zoom === 100) {
+			if (event.target.scrollTop > 100) {
+				console.log("pushState", event.target.scrollTop);
+				infoShowing = true;
+				pushState("", { scroll: event.target.scrollTop });
+				return;
+			} else if (event.target.scrollTop === 0 && infoShowing) {
+				console.log("----BACK---- in 5 secs!");
+				infoShowing = false;
+				setTimeout(() => {
+					history.back();
+				}, 5000);
+			}
+		}
+
 		// We want to calculate the image coordinates at the centre of the viewport
 		// we can use the imageWrapper since it will be same size as the image
 		let left = event.target.scrollLeft;
@@ -93,6 +130,7 @@
 
 <!-- spinner is 'fixed' so make sure we don't show it for off-screen carousel images -->
 <div
+	bind:this={viewport}
 	class="viewport scrollbar-hidden"
 	class:spinner={loadingImage && carouselSelected}
 	use:scrollposition={imgWidth}
