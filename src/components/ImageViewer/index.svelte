@@ -73,8 +73,10 @@
 		if (zoom === 100) {
 			if (event.target.scrollTop > 100) {
 				console.log("pushState", event.target.scrollTop);
-				infoShowing = true;
 				pushState("", { scroll: event.target.scrollTop });
+				setTimeout(() => {
+					infoShowing = true;
+				}, 1000);
 				return;
 			} else if (event.target.scrollTop === 0 && infoShowing) {
 				console.log("----BACK---- in 5 secs!");
