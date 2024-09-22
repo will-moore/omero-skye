@@ -6,6 +6,14 @@ export class RenderingSettings {
         // add theZ and theT based on default Z/T
         imgData.theZ = imgData.rdefs.defaultZ;
         imgData.theT = imgData.rdefs.defaultT;
+        // if greyscale, set active channel to white
+        if (imgData.rdefs.model === "greyscale") {
+            imgData.channels.forEach((ch) => {
+                if (ch.active) {
+                    ch.color = 'FFFFFF';
+                }
+            });
+        }
         this.store = writable(imgData);
     }
 

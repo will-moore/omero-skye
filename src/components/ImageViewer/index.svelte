@@ -12,6 +12,7 @@
 
 	let renderSettings = new RenderingSettings(imgData);
 	let renderQuery = renderSettings.getQueryString();
+	let loadingImage = false;
 
 	// page width/height - updated on e.g. phone rotation or resize
 	let innerWidth = 0;
@@ -40,6 +41,7 @@
 		renderQuery = renderSettings.getQueryString();
 		theZ = imgData.theZ;
 		theT = imgData.theT;
+		loadingImage = true;
 	})
 
 	// point on the image that is at centre of viewport - updated on pan!
@@ -89,8 +91,10 @@
 <!-- TODO: bind to viewport element instead of window? -->
 <svelte:window bind:innerWidth bind:innerHeight on:keydown|preventDefault={handleKeydown} />
 
+<!-- spinner is 'fixed' so make sure we don't show it for off-screen carousel images -->
 <div
 	class="viewport scrollbar-hidden"
+	class:spinner={loadingImage && carouselSelected}
 	use:scrollposition={imgWidth}
 	use:pinchAction
 	on:pinch={handlePinch}
@@ -109,6 +113,7 @@
 			TODO: improve decoupling -->
 		<img
 			class="image"
+			on:load={() => loadingImage = false}
 			class:scroll_shrink={zoom == 100}
 			style:--viewtransitionkey="image-{imgData.id}"
 			style:--shrinkHeight="{imgHeight * 0.5}px"
@@ -201,4 +206,25 @@
 		-ms-overflow-style: none;
 		scrollbar-width: none; /* Firefox */
 	}
+
+	.spinner:after {
+		content: "";
+		box-sizing: border-box;
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		width: 40px;
+		height: 40px;
+		margin-top: -20px;
+		margin-left: -20px;
+		border-radius: 50%;
+		border: 5px solid rgba(180, 180, 180, 0.6);
+		border-top-color: rgba(0, 0, 0, 0.6);
+		animation: spinner 1s linear infinite;
+	}
+	@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
 </style>
