@@ -10,7 +10,7 @@
 
 <p>
     <a href="{baseUrl}{imgData.id}/annotations">Annotations</a>
-    <a href="{BASE_URL}/webclient/img_detail/{imgData.id}/">Open in iviewer</a>
+    <a href="{BASE_URL}/webclient/img_detail/{imgData.id}/?full_page=true">Open in iviewer</a>
 </p>
 <p class="marginBorder">
 	Imported: <strong> {formatDate(imgData.meta.imageTimestamp * 1000)}</strong><br />
