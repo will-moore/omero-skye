@@ -1,4 +1,5 @@
 <script>
+	import { PUBLIC_BASE_URL as BASE_URL } from '$env/static/public';
 	import { page } from '$app/stores';
 	import ContainerObj from '../components/ContainerObj.svelte';
 	import Fa from 'svelte-fa';
@@ -58,7 +59,7 @@
 <div class="header">
 	<h1>Welcome to OMERO-skye</h1>
 	<p>A mobile-friendly app for browsing OMERO data, built with SvelteKit.</p>
-	<p>Browsing data from IDR...</p>
+	<p>Browsing data from <a target="_blank" href="{BASE_URL}">{BASE_URL}</a>.</p>
 </div>
 
 <div class="filter">
