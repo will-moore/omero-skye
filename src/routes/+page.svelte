@@ -51,14 +51,14 @@
 </script>
 
 <svelte:head>
-	<title>OMERO-skye</title>
+	<title>OMERO-skye@Crick</title>
 	<meta name="description" content="OMERO web app" />
 </svelte:head>
 
 <div class="header">
-	<h1>Welcome to OMERO-skye</h1>
+	<h1>Welcome to OMERO-skye@Crick</h1>
 	<p>A mobile-friendly app for browsing OMERO data, built with SvelteKit.</p>
-	<p>Browsing data from IDR...</p>
+	<p>Browsing data from the Crick...</p>
 </div>
 
 <div class="filter">
